@@ -21,7 +21,11 @@ function load(): Db {
   if (global.__fanrDb) return global.__fanrDb;
   try {
     const raw = fs.readFileSync(DB_FILE, "utf8");
-    global.__fanrDb = JSON.parse(raw) as Db;
+    const parsed = JSON.parse(raw) as Db;
+    // Migration guard: discard pre-remediation stores that carried fabricated
+    // seed data (they lack the transactions table); start from the clean seed.
+    if (!Array.isArray(parsed.transactions)) throw new Error("stale schema");
+    global.__fanrDb = parsed;
   } catch {
     global.__fanrDb = buildSeed();
     persist(global.__fanrDb);
@@ -58,6 +62,22 @@ export function addListing(l: Listing) {
   const db = load();
   db.listings.unshift(l);
   persist(db);
+}
+
+/** Idempotent transaction upsert keyed on (source, sourceReference) — Phase 5 worker. */
+export function upsertTransactions(rows: import("./types").IngestedTx[]): { inserted: number; skipped: number } {
+  const db = load();
+  const seen = new Set(db.transactions.map((t) => `${t.source}::${t.sourceReference}`));
+  let inserted = 0, skipped = 0;
+  for (const r of rows) {
+    const key = `${r.source}::${r.sourceReference}`;
+    if (seen.has(key)) { skipped++; continue; }
+    seen.add(key);
+    db.transactions.push(r);
+    inserted++;
+  }
+  if (inserted) persist(db);
+  return { inserted, skipped };
 }
 
 export function addClaim(c: ClaimedProperty) {

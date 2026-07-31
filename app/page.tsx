@@ -39,7 +39,7 @@ export default function Home() {
           <div className="stack">
             {rentals.slice(0, 5).map((l) => {
               const d = db.districts.find((x) => x.id === l.districtId)!;
-              const lr = legalRentFor(l, d);
+              const lr = legalRentFor(l, d, db.transactions);
               return (
                 <Link key={l.id} href={`/listings/${l.id}`} className="listing-card">
                   <div style={{ display: "flex", gap: 12, padding: 12 }}>

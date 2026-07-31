@@ -2,7 +2,7 @@ import { getDb, addListing } from "@/lib/store";
 import { verifyAdLicense } from "@/lib/compliance";
 import { ok, fail } from "@/lib/api";
 import { Listing } from "@/lib/types";
-import { estimateRent, estimateSale, legalRentFor } from "@/lib/avm";
+import { estimateFromRows, legalRentFor } from "@/lib/avm";
 
 /** GET /api/v1/homes/listings?ids=a,b,c — card + estimate data for saved/compare views. */
 export async function GET(req: Request) {
@@ -14,8 +14,8 @@ export async function GET(req: Request) {
     .filter((l): l is Listing => !!l)
     .map((l) => {
       const d = db.districts.find((x) => x.id === l.districtId)!;
-      const est = l.listingType === "rent" ? estimateRent(l, d) : estimateSale(l, d);
-      const lr = l.listingType === "rent" ? legalRentFor(l, d) : null;
+      const est = estimateFromRows(db.transactions, l, d, l.listingType === "rent" ? "rent" : "sale");
+      const lr = l.listingType === "rent" ? legalRentFor(l, d, db.transactions) : null;
       return {
         id: l.id,
         ref: l.ref,
@@ -31,9 +31,9 @@ export async function GET(req: Request) {
         districtId: d.id,
         districtNameAr: d.nameAr,
         photoSeed: l.photoSeed,
-        estimateValue: est.value,
-        estimateConfidence: est.confidence,
-        deltaPct: Math.round(((l.price - est.value) / est.value) * 100),
+        estimateValue: est.available ? est.value : null,
+        estimateConfidence: est.available ? est.confidence : null,
+        deltaPct: est.available ? Math.round(((l.price - est.value) / est.value) * 100) : null,
         verdict: lr?.verdict ?? null,
         legalCap: lr?.legalCap ?? null,
       };

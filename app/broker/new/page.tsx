@@ -100,7 +100,7 @@ function NewListingForm() {
               <input value={form.title} onChange={(e) => set("title", e.target.value)} required placeholder="شقة 3 غرف — حي الملقا" /></div>
             <div className="field"><label>الحي</label>
               <select value={form.districtId} onChange={(e) => set("districtId", e.target.value)}>
-                {["al-malqa", "hittin", "al-narjis", "al-yasmin", "al-sahafah", "qurtubah", "al-arid", "al-rabi", "al-olaya", "al-malaz"].map((id) => (
+                {["al-narjis", "al-malqa", "hittin", "al-yasmin", "al-aqiq", "qurtubah", "al-wadi", "al-sahafah", "an-nada", "ar-rabi"].map((id) => (
                   <option key={id} value={id}>{id}</option>
                 ))}
               </select></div>

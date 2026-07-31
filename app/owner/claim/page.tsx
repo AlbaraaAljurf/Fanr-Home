@@ -6,9 +6,9 @@ import { TYPE_LABELS } from "@/lib/format";
 import { ScreenHeader } from "@/components/Shell";
 
 const DISTRICTS = [
-  ["al-malqa", "الملقا"], ["hittin", "حطين"], ["al-narjis", "النرجس"], ["al-yasmin", "الياسمين"],
-  ["al-sahafah", "الصحافة"], ["qurtubah", "قرطبة"], ["al-arid", "العارض"], ["al-rabi", "الربيع"],
-  ["al-olaya", "العليا"], ["al-malaz", "الملز"],
+  ["al-narjis", "النرجس"], ["al-malqa", "الملقا"], ["hittin", "حطين"], ["al-yasmin", "الياسمين"],
+  ["al-aqiq", "العقيق"], ["qurtubah", "قرطبة"], ["al-wadi", "الوادي"], ["al-sahafah", "الصحافة"],
+  ["an-nada", "الندى"], ["ar-rabi", "الربيع"],
 ] as const;
 
 export default function ClaimPage() {

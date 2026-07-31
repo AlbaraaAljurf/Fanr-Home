@@ -12,7 +12,7 @@ export default function SearchPage() {
     .filter((l) => l.status === "live")
     .map((l) => {
       const d = db.districts.find((x) => x.id === l.districtId)!;
-      const lr = legalRentFor(l, d);
+      const lr = legalRentFor(l, d, db.transactions);
       return {
         id: l.id,
         ref: l.ref,

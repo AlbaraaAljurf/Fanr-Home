@@ -1,17 +1,22 @@
-import { transactionsFor } from "./transactions";
-import { PropertyType } from "./types";
+import { IngestedTx, PropertyType } from "./types";
 
-/** District analytics computed from the transaction corpus (E12 data pages). */
+/**
+ * District analytics — computed ONLY from ingested MOJ/SREM rows.
+ * Districts without sufficient ingested data return null and the UI
+ * renders an honest empty state (remediation §2.3, Phase 5.6).
+ */
 
 export interface DistrictStats {
   saleMedianM2: number;
-  rentMedianM2: number;
   saleCount12m: number;
-  rentCount12m: number;
-  trendPct12m: number;
+  trendPct: number | null; // recent 6m vs prior 6m; null when either half is thin
   mix: { type: PropertyType; pct: number }[];
-  monthlyMedianM2: number[]; // 12 buckets, oldest → newest (sale, SAR/m²)
+  monthlyMedianM2: (number | null)[]; // 12 buckets oldest→newest; null = no data that month
+  sources: string[];
+  latestAsOf: string | null;
 }
+
+const MIN_TX = 8;
 
 function median(xs: number[]): number {
   if (!xs.length) return 0;
@@ -20,53 +25,48 @@ function median(xs: number[]): number {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 }
 
-export function districtStats(districtId: string): DistrictStats {
-  const txs = transactionsFor(districtId);
-  const sales = txs.filter((t) => t.kind === "sale" && t.propertyType !== "land");
-  const rents = txs.filter((t) => t.kind === "rent");
+function daysAgo(t: IngestedTx): number {
+  return (Date.now() - new Date(t.dateISO).getTime()) / 86400000;
+}
 
-  const saleM2 = sales.map((t) => t.price / t.areaM2);
-  const rentM2 = rents.map((t) => t.price / t.areaM2);
+export function districtStats(transactions: IngestedTx[], districtId: string): DistrictStats | null {
+  const rows = transactions.filter(
+    (t) => t.districtId === districtId && t.kind === "sale" && daysAgo(t) <= 365 && t.areaM2 > 0 && t.price > 0
+  );
+  const nonLand = rows.filter((t) => t.propertyType !== "land");
+  if (nonLand.length < MIN_TX) return null;
 
-  // trend: median of most-recent 6 months vs prior 6 months
-  const recent = sales.filter((t) => t.daysAgo <= 182).map((t) => t.price / t.areaM2);
-  const prior = sales.filter((t) => t.daysAgo > 182).map((t) => t.price / t.areaM2);
-  const trendPct12m =
-    prior.length && recent.length
+  const m2 = (t: IngestedTx) => t.price / t.areaM2;
+
+  const recent = nonLand.filter((t) => daysAgo(t) <= 182).map(m2);
+  const prior = nonLand.filter((t) => daysAgo(t) > 182).map(m2);
+  const trendPct =
+    recent.length >= 4 && prior.length >= 4
       ? Math.round(((median(recent) - median(prior)) / median(prior)) * 1000) / 10
-      : 0;
+      : null;
 
-  // property-type mix across all transactions
   const byType = new Map<PropertyType, number>();
-  for (const t of txs) byType.set(t.propertyType, (byType.get(t.propertyType) ?? 0) + 1);
-  const total = txs.length || 1;
+  for (const t of rows) byType.set(t.propertyType, (byType.get(t.propertyType) ?? 0) + 1);
   const mix = Array.from(byType.entries())
-    .map(([type, n]) => ({ type, pct: Math.round((n / total) * 100) }))
+    .map(([type, n]) => ({ type, pct: Math.round((n / rows.length) * 100) }))
     .sort((a, b) => b.pct - a.pct);
 
-  const monthlyMedianM2: number[] = [];
+  const monthlyMedianM2: (number | null)[] = [];
   for (let m = 11; m >= 0; m--) {
-    const bucket = sales
-      .filter((t) => t.daysAgo >= m * 30 && t.daysAgo < (m + 1) * 30 + (m === 11 ? 10 : 0))
-      .map((t) => t.price / t.areaM2);
-    monthlyMedianM2.push(Math.round(median(bucket)) || 0);
-  }
-  // fill empty buckets by neighbour interpolation
-  for (let i = 0; i < 12; i++) {
-    if (!monthlyMedianM2[i]) {
-      const prev = monthlyMedianM2.slice(0, i).reverse().find(Boolean) ?? 0;
-      const next = monthlyMedianM2.slice(i + 1).find(Boolean) ?? prev;
-      monthlyMedianM2[i] = Math.round((prev + next) / 2) || next;
-    }
+    const bucket = nonLand.filter((t) => daysAgo(t) >= m * 30 && daysAgo(t) < (m + 1) * 30).map(m2);
+    monthlyMedianM2.push(bucket.length >= 3 ? Math.round(median(bucket)) : null);
   }
 
+  const sources = Array.from(new Set(rows.map((t) => t.source)));
+  const latestAsOf = rows.map((t) => t.asOfDate).sort().at(-1) ?? null;
+
   return {
-    saleMedianM2: Math.round(median(saleM2)),
-    rentMedianM2: Math.round(median(rentM2)),
-    saleCount12m: sales.length,
-    rentCount12m: rents.length,
-    trendPct12m,
+    saleMedianM2: Math.round(median(nonLand.map(m2))),
+    saleCount12m: nonLand.length,
+    trendPct,
     mix,
     monthlyMedianM2,
+    sources,
+    latestAsOf,
   };
 }

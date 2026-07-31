@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/guard-fabrication.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node scripts/guard-fabrication.mjs && npx tsx scripts/test-avm.ts"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

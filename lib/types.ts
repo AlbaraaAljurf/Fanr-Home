@@ -12,12 +12,38 @@ export interface District {
   nameEn: string;
   center: [number, number]; // [lng, lat]
   polygon: [number, number][]; // ring, [lng, lat]
-  /** Layer-1 baselines (SAR per m², trailing-12m medians) — seeded from market reference data */
-  basePriceM2Sale: number;
-  baseRentM2Annual: number;
-  trend12mPct: number;
-  txCount12m: number;
-  avgDaysOnMarket: number;
+  /** fallback aggregation zone for thin districts (PRD §7.2 Layer-1 fallback) */
+  parentZone: string;
+}
+
+/**
+ * Ingested real-market transaction (MOJ/SREM). Every row carries provenance;
+ * rows are the ONLY source of baselines and comparables. Attribute fields are
+ * optional — a comparable may render only when the full factor set is stored
+ * for both subject and comp (remediation §3.1).
+ */
+export interface IngestedTx {
+  id: string;
+  source: string; // e.g. "MOJ Open Data"
+  sourceReference: string; // unique upstream reference — idempotency key
+  asOfDate: string; // ISO date the source published/extracted
+  districtId: string;
+  kind: "sale" | "rent";
+  propertyType: PropertyType;
+  areaM2: number;
+  price: number; // total SAR (sale) or annual rent
+  dateISO: string; // transaction date
+  // optional attributes (present only in enriched extracts)
+  ageYears?: number;
+  finishGrade?: FinishGrade;
+  streetWidthM?: number;
+  corner?: boolean;
+  orientation?: "north" | "south" | "east" | "west";
+  floor?: number | null;
+  elevator?: boolean;
+  parkingSpaces?: number;
+  /** rent rows only: provenance grade — comps require "ejar_verified" */
+  rentVerification?: "ejar_verified" | "user_verified" | "unverified";
 }
 
 export interface AdLicense {
@@ -109,6 +135,7 @@ export interface Db {
   districts: District[];
   listings: Listing[];
   claimed: ClaimedProperty[];
+  transactions: IngestedTx[];
   seededAt: string;
 }
 

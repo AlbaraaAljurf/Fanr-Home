@@ -1,51 +1,79 @@
-# Fanr Homes — App Design Package (Full)
+# فَنر هومز — Fanr Homes (Phase 1 MVP)
 
-Complete product design for **Fanr Homes / فَنر هومز** — Saudi Arabia's consumer-first real-estate
-& rentals platform — derived from **PRD v1.0 (July 2026)**. Every screen is annotated with the PRD
-requirement IDs it satisfies.
+Saudi Arabia's consumer-first real-estate & rentals platform — **Phase 1: Riyadh, rentals-first**
+(PRD v1.0, Part X). A runnable Next.js full-stack app with a **real interactive map**
+(MapLibre GL + live OpenStreetMap tiles, real Riyadh coordinates), the REGA compliance gate,
+the Riyadh Legal Rent Indicator, and تقدير فَنر AVM Layers 1–2.
 
-## Viewing the design
+> 🎨 The full design package (design system + 37 annotated screens) lives in [`design/`](design/DESIGN.md).
 
-Open `index.html` in a browser (or serve the repo with any static server / GitHub Pages).
-No build step — plain HTML/CSS, one shared stylesheet.
+## Run it
 
-| File | Contents |
-|---|---|
-| `index.html` | Design overview: intent, principles, information architecture, screen inventory, compliance traceability |
-| `design-system.html` | Foundations: brand palette, semantic colour, Tajawal type scale, controls, and the four signature components |
-| `screens-core.html` | 01–10 · Splash, Nafath sign-in, intent picker, Home, map search, draw-boundary, filters, results, compare/co-shopping, saved searches |
-| `screens-property.html` | 11–17 · Property pages (rent + sale), تقدير فَنر detail, «هل إيجاري نظامي؟» checker (form + verdict), unlisted-property page, lead capture |
-| `screens-owner.html` | 18–23 · Owner dashboard, claim flow (Nafath + deed), owner listing wizard, Ejar readiness pack, renewal calendar |
-| `screens-broker.html` | 24–29 · Broker dashboard, add-listing compliance gate, lead inbox, subscriptions & featured, off-plan project (Wafi), admin console (web) |
-| `screens-invest-data.html` | 30–37 · Foreign-investor module (EN), district & city data pages, مساعد فَنر chat, notifications, profile |
-| `assets/design.css` | Shared design tokens + component styles |
+```bash
+npm install
+npm run dev        # → http://localhost:3000
+```
 
-## Design decisions (summary)
+No database or keys required — the MVP seeds itself (`data/db.json`) on first run.
+The map loads live OSM tiles directly in your browser.
 
-1. **Legal truth over market opinion.** In Riyadh the legal rent cap is the primary number wherever
-   it exists; the market estimate is demoted to context (PRD §7.3, E5.1). The Legal Rent Indicator,
-   the «هل إيجاري نظامي؟» checker, the freeze-zone map overlay and the «ضمن السقف النظامي» filter are
-   the product wedge no competitor has.
-2. **A range, never a bare number.** Every تقدير فَنر renders range + point + confidence + the Taqeem
-   disclaimer in UI copy (R3.5.1, R-E4-2/7); transparency panel shows comps, dates, district median
-   and the published error rate (R-E4-3/6).
-3. **Compliance as visible trust.** REGA ad-licence, FAL, Nafath and deed verification are first-class
-   UI (badge stack on every listing, publish gates in the wizards, expiry auto-unpublish states).
-4. **The listing is the start, not the end.** Cross-sell blocks route into the existing Fanr platform:
-   Cost Estimator (pre-filled, R-E3-4), Provider Directory, Developer Mode, Assets Wallet.
-5. **One app, one brand.** Homes is a module in the existing Fanr app (PRD Part XII, rec. 1) —
-   five-tab bottom nav, gradient header per the live app UI.
-6. **Arabic-first RTL**; the Foreign-Investor module (E9) is English-first LTR. Digits/licence numbers
-   always render LTR.
+## What's implemented (PRD Phase-1 scope)
 
-## Brand (per Fanr brand book, PRD §8.6)
+| Surface | Route | PRD |
+|---|---|---|
+| Home — market pulse, latest verified rentals | `/` | §9.1 |
+| **Map search** — real MapLibre/OSM map of Riyadh, price pins (red = above legal cap), freeze-zone overlay (versioned polygon), district outlines, filters, **freehand draw-your-boundary** with polygon filtering, synced result list | `/search` | E2, R-E2-1/2/7, R3.3.5 |
+| Listing page (SSR) — legal rent indicator (**cap governs, market demoted to context**), تقدير فَنر range + confidence + factor transparency + Taqeem disclaimer, verification stack, similar listings, **lead-gated contact reveal**, one-tap reporting | `/listings/[id]` | E3, E5, R-E3-1, R3.1.3, R3.5.1 |
+| «هل إيجاري نظامي؟» rent checker — three freeze statuses, verdict, tenant rights (auto-renewal, tenant registration, 60-day objection) | `/rent-checker` | R3.3.4, E5-S1 |
+| Owner dashboard — claimed property with tracked estimate, owner listing path | `/owner` | E6 |
+| Broker workspace — KPIs, listings table, licence-expiry alerts, lead inbox | `/broker` | E7 |
+| **Add-listing wizard** — REGA ad-licence verification gate (publish blocked until verified), mandatory freeze-status declaration + last Ejar value, advisory above-cap warning (logged, one-tap fix) | `/broker/new` | E1-S1, R3.1.1–.2, R3.3.2–.3 |
+| Admin console — moderation queue (above-cap, bait-price anomaly >40% below estimate, reports), daily licence sweep with auto-unpublish, AVM baseline monitor | `/admin` | E14, R3.1.4, E13 |
 
-- Navy `#1A3C8F` · Sky `#29ABE2` · Green `#4DB560` · Gold `#F5C518` · Gray `#6C757D`
-- Header gradient `#1E3FA8 → #3B5FD4` · primary button `#2B4FD8` · selected `#EEF2FF` on `#2B4FD8` · body `#F5F7FF`
-- Type: **Somar** (brand) → **Tajawal** as the digital substitute (loaded from Google Fonts)
+### API (PRD §8.3 envelope: `{success, data, meta, error}`)
 
-Gradient blocks stand in for listing photography/3D tours; map surfaces are illustrative mocks of the
-MapLibre implementation specified in PRD §8.1.
+```
+GET  /api/v1/homes/search?type=rent&beds=3&price_max=70000&within_cap=1&polygon=[[lng,lat],...]
+GET  /api/v1/homes/estimate?listing_id=…
+POST /api/v1/homes/listings                      # publish-gated on ad licence
+POST /api/v1/homes/listings/:id/leads            # contact revealed only after lead
+POST /api/v1/homes/listings/:id/report
+POST /api/v1/compliance/verify-ad-license
+POST /api/v1/compliance/verify-fal
+POST /api/v1/admin/listings/:id                  # moderation actions
+```
+
+## Architecture & MVP substitutions
+
+```
+app/            Next.js App Router — SSR pages + /api/v1 route handlers
+components/     MapSearch (MapLibre client), LeadPanel, AdminActions
+lib/
+  avm.ts        تقدير فَنر Layers 1–2: district baselines × versioned hedonic factor set
+  geo.ts        point-in-polygon, freeze-zone polygon (versioned: riyadh-urban-v1-mvp)
+  compliance.ts ad-licence/FAL verification stubs + daily expiry sweep
+  seed.ts       10 Riyadh districts (real coords) + 20 listings
+  store.ts      file-backed store (data/db.json)
+```
+
+Deliberate MVP substitutions, each isolated behind the module boundary the PRD names:
+
+- **Store**: JSON file ⇒ swap for PostgreSQL + PostGIS (`lib/store.ts`; PRD §8.1 non-negotiable at scale).
+- **Licence verification**: deterministic format-validation stubs ⇒ REGA/FAL APIs (`lib/compliance.ts`).
+- **Identity**: Nafath deferred — flows marked at their integration points.
+- **Freeze polygon**: approximated urban boundary, versioned ⇒ official أمانة الرياض GIS layer.
+- **AVM**: Layers 1–2 with the PRD's prior factor set (versioned, not hard-coded); Layer 3
+  comparables + MOJ/SREM ingestion arrive in Phase 2.
+- **Photos**: brand-gradient placeholders ⇒ media pipeline with perceptual-hash dedup.
+
+## Compliance behaviours you can test
+
+1. `/broker/new` → try licence `12345` → verification fails, publish stays disabled.
+2. Use `7200481963` → verifies → set asking above the Ejar value → advisory warning appears,
+   is logged to the listing's `complianceLog`, and the published page shows the public ⚠ badge.
+3. `/admin` → the seeded expired-licence listing is auto-unpublished by the daily sweep;
+   its public page returns the "no longer available" state.
+4. On any listing: contact details appear only after creating a lead; the lead lands in `/broker`.
 
 ---
-*Fanr Solutions — Confidential. Design package for internal & contracted development partners.*
+*Fanr Solutions — Confidential. MVP scaffold for internal & contracted development partners.*

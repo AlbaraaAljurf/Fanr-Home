@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getDb } from "@/lib/store";
 import { estimateSale } from "@/lib/avm";
 import { sar, TYPE_LABELS, CONF_LABELS } from "@/lib/format";
+import { LEASES, renewalStage } from "@/lib/leases";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,25 @@ export default function OwnerPage() {
         لوحة المالك — تتبّع قيمة عقاراتك شهرياً، وأعلن عنها بشارة «مالك» الموثّقة.
         (المطالبة بالعقار في الإنتاج تتم عبر نفاذ + التحقق من الصك؛ هنا حساب تجريبي مُهيأ مسبقاً.)
       </p>
+
+      {LEASES.filter((l) => renewalStage(l) === "notice_window_soon").map((l) => (
+        <Link key={l.id} href="/owner/renewals" style={{ display: "block", marginBottom: 14 }}>
+          <div className="card" style={{ background: "var(--warn-bg)", borderColor: "var(--warn-line)" }}>
+            <div className="cpad" style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <span style={{ fontSize: 20 }}>⏰</span>
+              <div style={{ flex: 1 }}>
+                <b style={{ fontSize: 14, color: "var(--warn)" }}>
+                  عقد {l.propertyTitle} يتجدد تلقائياً بعد {l.daysToEnd} يوماً
+                </b>
+                <div style={{ fontSize: 12, color: "var(--warn)", marginTop: 2 }}>
+                  مهلة الإخطار النظامية 60 يوماً — قرر التجديد أو الإخطار الآن
+                </div>
+              </div>
+              <span style={{ color: "var(--warn)", fontWeight: 800 }}>‹</span>
+            </div>
+          </div>
+        </Link>
+      ))}
 
       <div className="grid2">
         {claimed.map((c) => {
@@ -59,8 +79,8 @@ export default function OwnerPage() {
                 <hr className="hr" />
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <Link className="btn sm" href="/broker/new?as=owner">أعلن للإيجار</Link>
-                  <span className="btn soft sm">📄 حزمة الجاهزية لإيجار</span>
-                  <span className="btn soft sm">📆 تقويم التجديد</span>
+                  <Link className="btn soft sm" href="/owner/ejar-pack">📄 حزمة الجاهزية لإيجار</Link>
+                  <Link className="btn soft sm" href="/owner/renewals">📆 تقويم التجديد</Link>
                 </div>
                 <p className="disc" style={{ marginTop: 10 }}>
                   تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً
@@ -77,7 +97,7 @@ export default function OwnerPage() {
             <p className="disc" style={{ margin: "0 0 12px" }}>
               نفاذ + التحقق من الصك (يُخزَّن مشفّراً ولا يُعرض أبداً) — نقطة تكامل الإنتاج
             </p>
-            <span className="btn sm">＋ ابدأ المطالبة</span>
+            <Link href="/owner/claim" className="btn sm">＋ ابدأ المطالبة</Link>
           </div>
         </div>
       </div>

@@ -97,7 +97,21 @@ export default function SavedPage() {
               )}
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 11 }}>
-              <Link href="/search" className="btn sm">شغّل البحث</Link>
+              <Link
+                href={(() => {
+                  const q = new URLSearchParams();
+                  if (s.filters.type !== "rent") q.set("type", s.filters.type);
+                  if (s.filters.minBeds) q.set("beds", String(s.filters.minBeds));
+                  if (s.filters.maxPrice) q.set("pmax", String(s.filters.maxPrice));
+                  if (s.filters.capOnly) q.set("cap", "1");
+                  if (s.filters.polygon) q.set("poly", JSON.stringify(s.filters.polygon));
+                  const qs = q.toString();
+                  return qs ? `/search?${qs}` : "/search";
+                })()}
+                className="btn sm"
+              >
+                شغّل البحث — يستعيد الفلاتر والحدود
+              </Link>
               <button className="btn soft sm" onClick={() => removeSearch(s.id)}>حذف</button>
             </div>
           </div></div>

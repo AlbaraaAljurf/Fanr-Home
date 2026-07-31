@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Db, Listing } from "./types";
+import { ClaimedProperty, Db, Listing } from "./types";
 import { buildSeed } from "./seed";
 
 /**
@@ -57,6 +57,12 @@ export function getListing(id: string): Listing | null {
 export function addListing(l: Listing) {
   const db = load();
   db.listings.unshift(l);
+  persist(db);
+}
+
+export function addClaim(c: ClaimedProperty) {
+  const db = load();
+  db.claimed.push(c);
   persist(db);
 }
 

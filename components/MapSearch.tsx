@@ -63,6 +63,35 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
   const [justSaved, setJustSaved] = useState(false);
   const drawPts = useRef<Ring>([]);
 
+  // Deep-linkable filters (saved searches restore exactly): read URL on mount…
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const t = q.get("type");
+    if (t === "sale" || t === "rent") setType(t);
+    if (q.get("beds")) setMinBeds(Number(q.get("beds")) || 0);
+    if (q.get("pmax")) setMaxPrice(Number(q.get("pmax")) || null);
+    if (q.get("cap") === "1") setCapOnly(true);
+    const poly = q.get("poly");
+    if (poly) {
+      try {
+        const ring = JSON.parse(poly) as Ring;
+        if (Array.isArray(ring) && ring.length >= 4) setPolygon(ring);
+      } catch { /* ignore malformed polygon param */ }
+    }
+  }, []);
+
+  // …and mirror filter state back into the URL
+  useEffect(() => {
+    const q = new URLSearchParams();
+    if (type !== "rent") q.set("type", type);
+    if (minBeds) q.set("beds", String(minBeds));
+    if (maxPrice) q.set("pmax", String(maxPrice));
+    if (capOnly) q.set("cap", "1");
+    if (polygon) q.set("poly", JSON.stringify(polygon.map(([x, y]) => [Number(x.toFixed(5)), Number(y.toFixed(5))])));
+    const qs = q.toString();
+    window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
+  }, [type, minBeds, maxPrice, capOnly, polygon]);
+
   const filtered = useMemo(
     () =>
       listings.filter((l) => {
@@ -147,6 +176,19 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Render the active polygon (drawn now or restored from URL) once the map is ready
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready) return;
+    const src = map.getSource("draw") as maplibregl.GeoJSONSource | undefined;
+    if (!src) return;
+    if (polygon) {
+      src.setData({ type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [polygon] } });
+    } else {
+      src.setData({ type: "FeatureCollection", features: [] });
+    }
+  }, [polygon, ready]);
+
   // Freeze overlay toggle
   useEffect(() => {
     const map = mapRef.current;
@@ -219,9 +261,12 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
       if (!active) return;
       active = false;
       if (drawPts.current.length >= 3) {
-        const ring: Ring = [...drawPts.current, drawPts.current[0]];
+        // simplify the freehand path so the polygon stays URL-friendly
+        const pts = drawPts.current;
+        const step = Math.max(1, Math.ceil(pts.length / 48));
+        const sampled = pts.filter((_, i) => i % step === 0);
+        const ring: Ring = [...sampled, sampled[0]];
         setPolygon(ring);
-        render(true);
       }
       setDrawing(false);
     };

@@ -1,109 +1,74 @@
-# فَنر هومز — Fanr Homes (Phase 1 MVP)
+# فَنر هومز — Fanr Homes (Phase 1, remediated)
 
-Saudi Arabia's consumer-first real-estate & rentals platform — **Phase 1: Riyadh, rentals-first**
-(PRD v1.0, Part X). A runnable Next.js full-stack app with a **real interactive map**
-(MapLibre GL + live OpenStreetMap tiles, real Riyadh coordinates), the REGA compliance gate,
-the Riyadh Legal Rent Indicator, and تقدير فَنر AVM Layers 1–2.
+Saudi Arabia's consumer-first rentals & real-estate platform — Riyadh, rentals-first.
+A **mobile app shell** (not a web page) with a real MapLibre/OSM map, the REGA compliance
+gate, the Riyadh Legal Rent Indicator, and a data-honest تقدير فَنر.
 
-> 🎨 The full design package (design system + 37 annotated screens) lives in [`design/`](design/DESIGN.md).
+> 🎨 Design package: [`design/`](design/DESIGN.md) · 📄 PRD-traceable feature history in git log.
 
-## Run it
+## Run
 
 ```bash
 npm install
-npm run dev        # → http://localhost:3000
+npm run dev        # → http://localhost:3000  (open at 390×844 for the intended experience)
+npm test           # fabrication guard + AVM/compliance/ingestion assertions
 ```
 
-No database or keys required — the MVP seeds itself (`data/db.json`) on first run.
-The map loads live OSM tiles directly in your browser.
+## Data honesty (the contract of this codebase)
 
-## Deploy it (phone-friendly — no PC needed)
+- **No fabricated market facts anywhere.** No sample listings, transactions, rents, or
+  licence numbers ship in this repo. `scripts/guard-fabrication.mjs` **fails the build**
+  if `Math.random`/faker/chance/PRNGs appear under `app/api`, `lib`, or `scripts`.
+- **Every displayed number is derivable.** Comparables store both factor products and are
+  unit-tested to recompute within 0.5% (`scripts/test-avm.ts`); rows that can't pass don't render.
+- **Estimates only from ingested rows.** District baselines (winsorised 5/95, min 8 tx,
+  zone→city fallback with widening penalty) come exclusively from MOJ/SREM rows loaded by
+  `scripts/ingest-moj.ts` (idempotent; every row carries `source`, `source_reference`,
+  `as_of_date`). Until an extract is dropped into `data/ingest/`, every estimate surface
+  renders **«بيانات غير كافية لهذا الحي»** — by design.
+- **Model coefficients live in config**, not code: `config/avm-factor-sets.json` (versioned,
+  `effective_from`, `source`); compound hedonic multiplier clamped to **[0.80, 1.25]** with
+  binding logged. Model version + disclaimer are generated from the layers that actually
+  contributed. Rent comparables require `ejar_verified` provenance (none yet ⇒ suppressed).
+- **Market figures** (RETT, VAT, yield references) live in `config/market-reference.json`
+  with `source` + `as_of_date`, surfaced read-only in admin.
+- **Compliance beats value, always:** a listing above the legal rent cap never carries a
+  value/bargain badge on any surface; the cap is the primary number for frozen Riyadh
+  properties (`lib/complianceUi.ts`, unit-tested).
+- **Media:** real, rights-asserted imagery via the `lib/media.ts` pipeline contract — or an
+  honest labelled empty state. Nothing pretends to be a photo.
 
-The app needs no database, env vars, or build config, so any Next.js host runs it as-is:
+## App shell
 
-1. Open **[vercel.com/new](https://vercel.com/new)** and sign in with your GitHub account.
-2. **Import** the `Fanr-Home` repository (install the Vercel GitHub app on it when prompted).
-3. Leave every setting at its default and tap **Deploy** — you get a public URL like
-   `fanr-home.vercel.app` in about a minute, with the real interactive map working on mobile.
+`100dvh`, max-width 480, page never scrolls (only the content region). Fixed 56px gradient
+headers (RTL back on the right), fixed 5-tab navy bar (الرئيسية · الخريطة · المحفوظات ·
+أملاكي · حسابي). `/broker` and `/admin` are reached from **حسابي** — not public tabs.
+Filters, the rent checker, and the lead form are bottom sheets. The listing screen has a
+sticky bottom action bar (contact + favourite) and a full-bleed media region.
 
-Note for the demo deployment: the serverless filesystem is ephemeral, so listings/leads you
-create live in the instance's memory and may reset between visits — the production answer is
-the PostgreSQL + PostGIS swap described below. Everything else (map, draw-boundary, estimates,
-checker, compliance gate) behaves fully.
+## Loading real data
 
-## What's implemented (PRD Phase-1 scope)
-
-| Surface | Route | PRD |
-|---|---|---|
-| Home — market pulse, latest verified rentals | `/` | §9.1 |
-| **Map search** — real MapLibre/OSM map of Riyadh, price pins (red = above legal cap), freeze-zone overlay (versioned polygon), district outlines, filters, **freehand draw-your-boundary** with polygon filtering, synced result list | `/search` | E2, R-E2-1/2/7, R3.3.5 |
-| Listing page (SSR) — legal rent indicator (**cap governs, market demoted to context**), تقدير فَنر range + confidence + factor transparency + Taqeem disclaimer, verification stack, similar listings, **lead-gated contact reveal**, one-tap reporting | `/listings/[id]` | E3, E5, R-E3-1, R3.1.3, R3.5.1 |
-| «هل إيجاري نظامي؟» rent checker — three freeze statuses, verdict, tenant rights (auto-renewal, tenant registration, 60-day objection) | `/rent-checker` | R3.3.4, E5-S1 |
-| Owner dashboard — claimed properties with tracked estimates, renewal banner, owner listing path | `/owner` | E6 |
-| Claim wizard — simulated Nafath + deed verification (hash-only note), persists to the portfolio | `/owner/claim` | E1-S2, E13 |
-| Ejar readiness pack — parties/property/terms checklist, no-increase-clause check, handoff to ejar.sa | `/owner/ejar-pack` | R3.2.1–.2 |
-| Renewal calendar — 90/65-day alerts visualised against the 60-day statutory notice | `/owner/renewals` | R3.2.3, E5-S4 |
-| Broker workspace — lead inbox with statuses (new→responded→qualified→closed), **earned response-rate badge** computed from real first-response timing (awarded under a 6h median), SLA-overdue nudges, 30-day availability re-confirmation, licence-expiry alerts | `/broker` | E7, R-E7-4, E7.2 |
-| **Add-listing wizard** — REGA ad-licence verification gate (publish blocked until verified), mandatory freeze-status declaration + last Ejar value, advisory above-cap warning (logged, one-tap fix), publish-time duplicate detection (district+price±5%+area±10% → flagged for admin review) | `/broker/new` | E1-S1, R3.1.1–.2, R3.3.2–.3, E1-S5 |
-| Admin console — moderation queue (above-cap, bait-price anomaly >40% below estimate, reports), daily licence sweep with auto-unpublish, AVM baseline monitor with implied-yield guardrail (3–10%) | `/admin` | E14, R3.1.4, E13, §7.2 |
-| **District data pages** — medians, 12-month trend, monthly price chart, property mix, live inventory — all computed from the transaction corpus | `/districts/[id]` | E12, R-E12-1 |
-| Rent-freeze explainer — the three scenarios, auto-renewal, 60-day windows, objection route (quotable GEO/SEO content) | `/guide/rent-freeze` | E5.3, R-E12-5 |
-| Saved searches (with new-match counts, exact restore via deep-linked filters incl. drawn polygon) + favourites | `/saved` | E10, R-E2-8 |
-| Compare view — up to 4 favourites on price/m², estimate delta, legal cap | `/compare` | E10 |
-
-### API (PRD §8.3 envelope: `{success, data, meta, error}`)
-
-```
-GET  /api/v1/homes/search?type=rent&beds=3&price_max=70000&within_cap=1&polygon=[[lng,lat],...]
-GET  /api/v1/homes/estimate?listing_id=…
-POST /api/v1/homes/listings                      # publish-gated on ad licence
-POST /api/v1/homes/listings/:id/leads            # contact revealed only after lead
-POST /api/v1/homes/listings/:id/report
-POST /api/v1/compliance/verify-ad-license
-POST /api/v1/compliance/verify-fal
-POST /api/v1/admin/listings/:id                  # moderation actions
+```bash
+# 1. Download a transactions extract (MOJ open data / SREM) and map it to the
+#    column contract in data/ingest/README.md
+npx tsx scripts/ingest-moj.ts data/ingest/extract.csv --dry-run   # validate
+npx tsx scripts/ingest-moj.ts data/ingest/extract.csv             # ingest (idempotent)
 ```
 
-## Architecture & MVP substitutions
+Estimates, district pages, and the admin baseline monitor light up automatically once
+≥8 rows/district exist; comparables additionally need attribute-complete rows.
+
+## Structure
 
 ```
-app/            Next.js App Router — SSR pages + /api/v1 route handlers
-components/     MapSearch (MapLibre client), LeadPanel, AdminActions
-lib/
-  avm.ts          تقدير فَنر — full three-layer hybrid (PRD Part VII):
-                  L1 district baselines × L2 hedonic factors (lib/factors.ts, versioned)
-                  × L3 comparable reconciliation: area ±25%, trailing 9 months, 12 nearest,
-                  weighted median (6-month recency half-life × inverse distance × attribute
-                  similarity), w2 by comp count (≥8→0.70, 5–7→0.55, 3–4→0.40, <3→0),
-                  confidence & range from comp dispersion, yield guardrail 3–10%
-  transactions.ts synthetic MOJ/SREM-style transaction corpus (deterministic PRNG) —
-                  stands in for fanr-ingestion-worker
-  marketstats.ts  district analytics (medians, trend, mix, monthly series) from the corpus
-  geo.ts          point-in-polygon, freeze-zone polygon (versioned: riyadh-urban-v1-mvp)
-  compliance.ts   ad-licence/FAL verification stubs + daily expiry sweep
-  seed.ts         10 Riyadh districts (real coords) + 20 listings
-  store.ts        file-backed store (data/db.json)
-  clientStore.ts  saved searches + favourites (localStorage)
+app/            App Router screens + /api/v1 routes (PRD envelope)
+components/     Shell (header/tabbar/sheet/media-empty), MapSearch, sheets
+lib/            avm (3-layer, config-driven, clamped), baselines, complianceUi,
+                districts (geo only), marketref, media contract, store, geo
+config/         avm-factor-sets.json · market-reference.json  (versioned, sourced)
+scripts/        guard-fabrication · ingest-moj · test-avm · test-ingest
+data/ingest/    drop-zone for real MOJ/SREM extracts (header-only sample)
 ```
-
-Deliberate MVP substitutions, each isolated behind the module boundary the PRD names:
-
-- **Store**: JSON file ⇒ swap for PostgreSQL + PostGIS (`lib/store.ts`; PRD §8.1 non-negotiable at scale).
-- **Licence verification**: deterministic format-validation stubs ⇒ REGA/FAL APIs (`lib/compliance.ts`).
-- **Identity**: Nafath deferred — flows marked at their integration points.
-- **Freeze polygon**: approximated urban boundary, versioned ⇒ official أمانة الرياض GIS layer.
-- **AVM**: full three-layer pipeline is live; the transaction corpus behind Layer 3 is
-  synthetic (deterministic) until real MOJ/SREM ingestion lands — swap `lib/transactions.ts`.
-- **Photos**: brand-gradient placeholders ⇒ media pipeline with perceptual-hash dedup.
-
-## Compliance behaviours you can test
-
-1. `/broker/new` → try licence `12345` → verification fails, publish stays disabled.
-2. Use `7200481963` → verifies → set asking above the Ejar value → advisory warning appears,
-   is logged to the listing's `complianceLog`, and the published page shows the public ⚠ badge.
-3. `/admin` → the seeded expired-licence listing is auto-unpublished by the daily sweep;
-   its public page returns the "no longer available" state.
-4. On any listing: contact details appear only after creating a lead; the lead lands in `/broker`.
 
 ---
-*Fanr Solutions — Confidential. MVP scaffold for internal & contracted development partners.*
+*Fanr Solutions — Confidential.*

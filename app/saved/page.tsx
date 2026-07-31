@@ -17,7 +17,7 @@ interface CardData {
   areaM2: number;
   districtNameAr: string;
   photoSeed: number;
-  deltaPct: number;
+  deltaPct: number | null;
   verdict: string | null;
 }
 
@@ -147,9 +147,9 @@ export default function SavedPage() {
                 {TYPE_LABELS[l.propertyType]} · {l.areaM2} م² · {l.districtNameAr}
               </div>
               <div style={{ display: "flex", gap: 5, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
-                {l.deltaPct <= -5 && <span className="badge gold">★ ‎{l.deltaPct}٪ عن التقدير</span>}
+                {l.verdict !== "above_cap" && l.deltaPct != null && l.deltaPct <= -5 && <span className="badge gold">★ ‎{l.deltaPct}٪ عن التقدير</span>}
                 {l.verdict === "within_cap" && <span className="badge info">⚖ ضمن السقف</span>}
-                {l.verdict === "above_cap" && <span className="badge warn">⚠ أعلى من السقف</span>}
+                {l.verdict === "above_cap" && <span className="badge danger">✕ أعلى من السقف النظامي</span>}
                 <button onClick={() => removeFav(l.id)} className="chip" style={{ marginInlineStart: "auto", fontSize: 11 }}>♥ إزالة</button>
               </div>
             </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getFavs } from "@/components/FavButton";
 import { sar, TYPE_LABELS, FREEZE_LABELS } from "@/lib/format";
 import { ScreenHeader, MediaEmpty } from "@/components/Shell";
+import { valueBadgeFor, LegalVerdict } from "@/lib/complianceUi";
 
 interface Row {
   id: string;
@@ -19,8 +20,8 @@ interface Row {
   districtNameAr: string;
   districtId: string;
   photoSeed: number;
-  estimateValue: number;
-  deltaPct: number;
+  estimateValue: number | null;
+  deltaPct: number | null;
   verdict: string | null;
   legalCap: number | null;
 }
@@ -68,11 +69,21 @@ export default function ComparePage() {
     },
     {
       k: "مقابل تقدير فَنر",
-      render: (r) =>
-        r.deltaPct <= -5 ? <span className="badge gold">★ {r.deltaPct}٪</span> :
-        r.deltaPct >= 8 ? <span className="badge warn">‎+{r.deltaPct}٪</span> :
-        <span className="badge info">مطابق تقريباً</span>,
-      hi: (rs) => rs.reduce((a, b) => (a.deltaPct < b.deltaPct ? a : b)).id,
+      render: (r) => {
+        if (r.verdict === "above_cap")
+          return <span className="badge danger">✕ أعلى من السقف — لا يُعرض كقيمة</span>;
+        if (r.estimateValue == null)
+          return <span style={{ color: "var(--ink-3)", fontSize: 12 }}>بيانات غير كافية</span>;
+        const b = valueBadgeFor(r.price, r.estimateValue, r.verdict as LegalVerdict);
+        if (b?.kind === "below_estimate") return <span className="badge gold">★ ‎−{b.pct}٪</span>;
+        if (b?.kind === "above_estimate") return <span className="badge warn">‎+{b.pct}٪</span>;
+        return <span className="badge info">مطابق تقريباً</span>;
+      },
+      hi: (rs) => {
+        const ok = rs.filter((r) => r.verdict !== "above_cap" && r.estimateValue != null);
+        if (!ok.length) return null;
+        return ok.reduce((a, b) => ((a.deltaPct ?? 0) < (b.deltaPct ?? 0) ? a : b)).id;
+      },
     },
     {
       k: "الوضع النظامي",

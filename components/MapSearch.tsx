@@ -433,7 +433,7 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
                 <div style={{ display: "flex", gap: 5, marginTop: 7, flexWrap: "wrap" }}>
                   <span className="badge ok">✓ مرخّص</span>
                   {l.verdict === "within_cap" && <span className="badge info">⚖ ضمن السقف</span>}
-                  {l.verdict === "above_cap" && <span className="badge warn">⚠ أعلى من السقف</span>}
+                  {l.verdict === "above_cap" && <span className="badge danger">✕ أعلى من السقف النظامي</span>}
                   {l.advertiserType === "owner_self_listing" && <span className="badge navy">👤 مالك</span>}
                   {l.stale && <span className="badge warn">قد لا يكون متاحاً</span>}
                 </div>

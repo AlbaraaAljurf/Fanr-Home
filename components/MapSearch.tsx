@@ -64,6 +64,7 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
   const [polygon, setPolygon] = useState<Ring | null>(null);
   const [justSaved, setJustSaved] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [resultsOpen, setResultsOpen] = useState(false);
   const drawPts = useRef<Ring>([]);
 
   // Deep-linkable filters (saved searches restore exactly): read URL on mount…
@@ -324,15 +325,18 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
             <span className="chip sm glassy sel" onClick={clearPolygon}>✕ مسح الحدود</span>
           )}
         </div>
-        <div
+        <button
           className="glassy"
-          style={{ position: "absolute", bottom: 10, right: 10, left: 10, zIndex: 5, borderRadius: 12, padding: "8px 13px", display: "flex", alignItems: "center", gap: 8 }}
+          onClick={() => setResultsOpen(true)}
+          style={{ position: "absolute", bottom: 12, right: 12, left: 12, zIndex: 5, borderRadius: 14, padding: "12px 15px", display: "flex", alignItems: "center", gap: 9, minHeight: 48, textAlign: "start" }}
         >
-          <b style={{ fontSize: 13 }}>{filtered.length} عقاراً</b>
+          <span style={{ fontSize: 15 }}>☰</span>
+          <b style={{ fontSize: 13.5 }}>{filtered.length} عقاراً</b>
           <span style={{ fontSize: 11, color: "var(--ink-2)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {polygon ? "داخل حدودك · " : ""}OpenStreetMap حية
+            {filtered.length === 0 ? "لا نتائج — عدّل الفلاتر" : polygon ? "داخل حدودك المرسومة" : "اعرض القائمة"}
           </span>
-        </div>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--primary)" }}>▲</span>
+        </button>
 
         <Sheet
           open={filtersOpen}
@@ -412,44 +416,49 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
             </span>
           </div>
         </Sheet>
-      </div>
 
-      <aside className="list-pane">
-        {filtered.map((l) => (
-          <Link key={l.id} href={`/listings/${l.id}`} className="listing-card">
-            <div style={{ display: "flex", gap: 12, padding: 12 }}>
-              <div style={{ width: 86, flex: "none" }}><MediaEmpty tile height={76} label="لا صور" /></div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
-                  <b style={{ fontSize: 15, color: "var(--navy)" }}>
-                    {l.price.toLocaleString("en-US")} ريال{l.listingType === "rent" ? "/سنة" : ""}
-                  </b>
-                  <span style={{ fontSize: 10, color: "var(--ink-3)", direction: "ltr" }}>{l.ref}</span>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l.title}</div>
-                <div style={{ fontSize: 11.5, color: "var(--ink-3)", marginTop: 2 }}>
-                  {TYPE_LABELS[l.propertyType]} · {l.areaM2} م² · {l.bedrooms} غرف · {l.districtNameAr}
-                </div>
-                <div style={{ display: "flex", gap: 5, marginTop: 7, flexWrap: "wrap" }}>
-                  <span className="badge ok">✓ مرخّص</span>
-                  {l.verdict === "within_cap" && <span className="badge info">⚖ ضمن السقف</span>}
-                  {l.verdict === "above_cap" && <span className="badge danger">✕ أعلى من السقف النظامي</span>}
-                  {l.advertiserType === "owner_self_listing" && <span className="badge navy">👤 مالك</span>}
-                  {l.stale && <span className="badge warn">قد لا يكون متاحاً</span>}
-                </div>
-              </div>
+        <Sheet open={resultsOpen} onClose={() => setResultsOpen(false)} title={`النتائج (${filtered.length})`}>
+          {filtered.length === 0 ? (
+            <div className="empty-state">
+              <span className="ei">🗺</span>
+              <b>لا نتائج مطابقة</b>
+              <p>جرّب توسيع الفلاتر أو مسح الحدود المرسومة — الإعلانات تظهر فور نشرها عبر بوابة الالتزام.</p>
             </div>
-          </Link>
-        ))}
-        {filtered.length === 0 && (
-          <div className="card"><div className="cpad" style={{ textAlign: "center", color: "var(--ink-2)" }}>
-            لا نتائج مطابقة — جرّب توسيع الفلاتر أو مسح الحدود المرسومة
-          </div></div>
-        )}
-        <p className="disc" style={{ textAlign: "center", marginTop: 6 }}>
-          الإعلانات المعروضة جميعها برخصة إعلان سارية متحقَّق منها · تقدير فَنر مؤشر استرشادي وليس تقييماً معتمداً
-        </p>
-      </aside>
+          ) : (
+            <div className="stack">
+              {filtered.map((l) => (
+                <Link key={l.id} href={`/listings/${l.id}`} className="listing-card">
+                  <div style={{ display: "flex", gap: 12, padding: 12 }}>
+                    <div style={{ width: 86, flex: "none" }}><MediaEmpty tile height={76} label="لا صور" /></div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                        <b style={{ fontSize: 15, color: "var(--navy)" }}>
+                          {l.price.toLocaleString("en-US")} ريال{l.listingType === "rent" ? "/سنة" : ""}
+                        </b>
+                        <span style={{ fontSize: 10, color: "var(--ink-3)", direction: "ltr" }}>{l.ref}</span>
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l.title}</div>
+                      <div style={{ fontSize: 11.5, color: "var(--ink-3)", marginTop: 2 }}>
+                        {TYPE_LABELS[l.propertyType]} · {l.areaM2} م² · {l.bedrooms} غرف · {l.districtNameAr}
+                      </div>
+                      <div style={{ display: "flex", gap: 5, marginTop: 7, flexWrap: "wrap" }}>
+                        <span className="badge ok">✓ مرخّص</span>
+                        {l.verdict === "within_cap" && <span className="badge info">⚖ ضمن السقف</span>}
+                        {l.verdict === "above_cap" && <span className="badge danger">✕ أعلى من السقف النظامي</span>}
+                        {l.advertiserType === "owner_self_listing" && <span className="badge navy">👤 مالك</span>}
+                        {l.stale && <span className="badge warn">قد لا يكون متاحاً</span>}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              <p className="disc" style={{ textAlign: "center", marginTop: 4 }}>
+                الإعلانات المعروضة جميعها برخصة إعلان سارية متحقَّق منها · تقدير فَنر مؤشر استرشادي وليس تقييماً معتمداً
+              </p>
+            </div>
+          )}
+        </Sheet>
+      </div>
     </div>
   );
 }

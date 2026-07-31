@@ -7,6 +7,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { pointInPolygon, Ring } from "@/lib/geo";
 import { sarShort, TYPE_LABELS } from "@/lib/format";
 import { addSavedSearch } from "@/lib/clientStore";
+import { Sheet, MediaEmpty } from "./Shell";
 
 export interface MapListing {
   id: string;
@@ -62,6 +63,7 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
   const [drawing, setDrawing] = useState(false);
   const [polygon, setPolygon] = useState<Ring | null>(null);
   const [justSaved, setJustSaved] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const drawPts = useRef<Ring>([]);
 
   // Deep-linkable filters (saved searches restore exactly): read URL on mount…
@@ -300,66 +302,123 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
       });
   };
 
+  const activeFilterCount =
+    (minBeds ? 1 : 0) + (maxPrice ? 1 : 0) + (capOnly ? 1 : 0) + (polygon ? 1 : 0);
+
   return (
-    <div className="search-layout">
+    <div className="map-wrap">
       <div className="map-pane">
         <div ref={mapEl} style={{ position: "absolute", inset: 0 }} />
         <div className="map-toolbar">
-          <span className={`chip glassy ${type === "rent" ? "sel" : ""}`} onClick={() => setType("rent")}>إيجار</span>
-          <span className={`chip glassy ${type === "sale" ? "sel" : ""}`} onClick={() => setType("sale")}>بيع</span>
-          <span className={`chip glassy ${minBeds >= 3 ? "sel" : ""}`} onClick={() => setMinBeds(minBeds >= 3 ? 0 : 3)}>3+ غرف</span>
-          {type === "rent" && (
-            <>
-              <span className={`chip glassy ${maxPrice ? "sel" : ""}`} onClick={() => setMaxPrice(maxPrice ? null : 70000)}>تحت 70 ألف</span>
-              <span className={`chip glassy ${capOnly ? "sel" : ""}`} onClick={() => setCapOnly(!capOnly)}>⚖ ضمن السقف النظامي</span>
-            </>
-          )}
-          <span className={`chip glassy ${showFreeze ? "sel" : ""}`} onClick={() => setShowFreeze(!showFreeze)}>نطاق التجميد</span>
+          <span className={`chip sm glassy ${filtersOpen ? "sel" : ""}`} onClick={() => setFiltersOpen(true)}>
+            ⚙ الفلاتر{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+          </span>
+          <span className={`chip sm glassy ${type === "rent" ? "sel" : ""}`} onClick={() => setType(type === "rent" ? "sale" : "rent")}>
+            {type === "rent" ? "إيجار" : "بيع"} ⇄
+          </span>
           {!polygon ? (
-            <span className={`chip glassy ${drawing ? "sel" : ""}`} onClick={() => setDrawing(!drawing)}>
-              ✏️ {drawing ? "ارسم على الخريطة الآن…" : "ارسم حدودك"}
+            <span className={`chip sm glassy ${drawing ? "sel" : ""}`} onClick={() => setDrawing(!drawing)}>
+              ✏️ {drawing ? "ارسم الآن…" : "ارسم حدودك"}
             </span>
           ) : (
-            <span className="chip glassy sel" onClick={clearPolygon}>✕ مسح الحدود المرسومة</span>
+            <span className="chip sm glassy sel" onClick={clearPolygon}>✕ مسح الحدود</span>
           )}
-          <span
-            className="chip glassy"
-            onClick={() => {
-              const parts = [
-                type === "rent" ? "إيجار" : "بيع",
-                minBeds ? `${minBeds}+ غرف` : null,
-                maxPrice ? `تحت ${sarShort(maxPrice)}` : null,
-                capOnly ? "ضمن السقف" : null,
-                polygon ? "حدود مرسومة" : "الرياض",
-              ].filter(Boolean);
-              addSavedSearch({
-                name: parts.join(" · "),
-                filters: { type, minBeds, maxPrice, capOnly, polygon },
-                lastSeenCount: filtered.length,
-              });
-              setJustSaved(true);
-              setTimeout(() => setJustSaved(false), 2000);
-            }}
-          >
-            {justSaved ? "✓ حُفظ البحث" : "🔔 احفظ البحث"}
-          </span>
         </div>
         <div
           className="glassy"
-          style={{ position: "absolute", bottom: 14, right: 14, left: 14, zIndex: 5, borderRadius: 14, padding: "10px 15px", display: "flex", alignItems: "center", gap: 10 }}
+          style={{ position: "absolute", bottom: 10, right: 10, left: 10, zIndex: 5, borderRadius: 12, padding: "8px 13px", display: "flex", alignItems: "center", gap: 8 }}
         >
-          <b style={{ fontSize: 14 }}>{filtered.length} عقاراً مطابقاً</b>
-          <span style={{ fontSize: 12, color: "var(--ink-2)" }}>
-            {polygon ? "داخل حدودك المرسومة · " : ""}خريطة OpenStreetMap حية — نطاق التجميد نسخة {freezeVersion}
+          <b style={{ fontSize: 13 }}>{filtered.length} عقاراً</b>
+          <span style={{ fontSize: 11, color: "var(--ink-2)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {polygon ? "داخل حدودك · " : ""}OpenStreetMap حية
           </span>
         </div>
+
+        <Sheet
+          open={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          title="الفلاتر"
+          footer={
+            <>
+              <button className="btn" style={{ flex: 2 }} onClick={() => setFiltersOpen(false)}>
+                عرض {filtered.length} نتيجة
+              </button>
+              <button
+                className="btn soft"
+                style={{ flex: 1.4 }}
+                onClick={() => {
+                  const parts = [
+                    type === "rent" ? "إيجار" : "بيع",
+                    minBeds ? `${minBeds}+ غرف` : null,
+                    maxPrice ? `تحت ${sarShort(maxPrice)}` : null,
+                    capOnly ? "ضمن السقف" : null,
+                    polygon ? "حدود مرسومة" : "الرياض",
+                  ].filter(Boolean);
+                  addSavedSearch({
+                    name: parts.join(" · "),
+                    filters: { type, minBeds, maxPrice, capOnly, polygon },
+                    lastSeenCount: filtered.length,
+                  });
+                  setJustSaved(true);
+                  setTimeout(() => setJustSaved(false), 2000);
+                }}
+              >
+                {justSaved ? "✓ حُفظ" : "🔔 احفظ البحث"}
+              </button>
+            </>
+          }
+        >
+          <div className="field">
+            <label>نوع العملية</label>
+            <div style={{ display: "flex", gap: 6 }}>
+              <span className={`chip ${type === "rent" ? "sel" : ""}`} style={{ flex: 1, justifyContent: "center" }} onClick={() => setType("rent")}>إيجار</span>
+              <span className={`chip ${type === "sale" ? "sel" : ""}`} style={{ flex: 1, justifyContent: "center" }} onClick={() => setType("sale")}>بيع</span>
+            </div>
+          </div>
+          <div className="field">
+            <label>الغرف</label>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {[0, 2, 3, 4].map((n) => (
+                <span key={n} className={`chip ${minBeds === n ? "sel" : ""}`} onClick={() => setMinBeds(n)}>
+                  {n === 0 ? "الكل" : `${n}+`}
+                </span>
+              ))}
+            </div>
+          </div>
+          {type === "rent" && (
+            <>
+              <div className="field">
+                <label>الإيجار السنوي الأقصى</label>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {[null, 50000, 70000, 100000].map((p) => (
+                    <span key={String(p)} className={`chip ${maxPrice === p ? "sel" : ""}`} onClick={() => setMaxPrice(p)}>
+                      {p == null ? "بلا حد" : `≤ ${sarShort(p)}`}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="field">
+                <label>الالتزام</label>
+                <span className={`chip ${capOnly ? "sel" : ""}`} onClick={() => setCapOnly(!capOnly)}>
+                  ⚖ ضمن السقف النظامي فقط
+                </span>
+              </div>
+            </>
+          )}
+          <div className="field" style={{ marginBottom: 0 }}>
+            <label>طبقات الخريطة</label>
+            <span className={`chip ${showFreeze ? "sel" : ""}`} onClick={() => setShowFreeze(!showFreeze)}>
+              نطاق تجميد الرياض ({freezeVersion})
+            </span>
+          </div>
+        </Sheet>
       </div>
 
       <aside className="list-pane">
         {filtered.map((l) => (
           <Link key={l.id} href={`/listings/${l.id}`} className="listing-card">
             <div style={{ display: "flex", gap: 12, padding: 12 }}>
-              <div className={`photo g${l.photoSeed % 4 === 0 ? 1 : l.photoSeed % 4}`} style={{ width: 86, height: 76, borderRadius: 12, flex: "none", fontSize: 26 }}>⌂</div>
+              <div style={{ width: 86, flex: "none" }}><MediaEmpty tile height={76} label="لا صور" /></div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
                   <b style={{ fontSize: 15, color: "var(--navy)" }}>

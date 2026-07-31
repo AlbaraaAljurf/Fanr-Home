@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ScreenHeader } from "@/components/Shell";
+import { RentCheckerButton } from "@/components/RentCheckerSheet";
 
 export const metadata: Metadata = {
   title: "دليل تجميد الإيجارات في الرياض 2025–2030 | فَنر هومز",
@@ -13,8 +15,9 @@ export const metadata: Metadata = {
  */
 export default function RentFreezeGuide() {
   return (
-    <main className="wrap" style={{ maxWidth: 820 }}>
-      <h1 className="h1">دليل تجميد الإيجارات في الرياض ⚖</h1>
+    <>
+      <ScreenHeader title="دليل تجميد الإيجارات" back />
+      <main className="wrap">
       <p className="sub">
         بموجب الأمر الملكي وقرار مجلس الوزراء النافذ في 25 سبتمبر 2025، تُوقف الزيادة في أجور
         العقارات السكنية والتجارية داخل النطاق العمراني لمدينة الرياض لمدة خمس سنوات (حتى 2030).
@@ -89,7 +92,7 @@ export default function RentFreezeGuide() {
           والتنمية — تصميم فَنر يجعل التوسّع إعداداً لا برمجة.
         </p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Link href="/rent-checker" className="btn sm">⚖ تحقق من وضعك الآن</Link>
+          <RentCheckerButton className="btn sm auto" label="⚖ تحقق من وضعك الآن" />
           <Link href="/search" className="btn ghost sm">شاهد النطاق على الخريطة</Link>
         </div>
       </div></div>
@@ -99,5 +102,6 @@ export default function RentFreezeGuide() {
         العامة للعقار — عند التعارض، النص النظامي هو الحاكم
       </p>
     </main>
+    </>
   );
 }

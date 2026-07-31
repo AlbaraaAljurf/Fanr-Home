@@ -5,6 +5,7 @@ import { getDb, getDistrict } from "@/lib/store";
 import { districtStats } from "@/lib/marketstats";
 import { sar, TYPE_LABELS } from "@/lib/format";
 import { inFreezeZone } from "@/lib/geo";
+import { ScreenHeader, MediaEmpty } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -27,9 +28,10 @@ export default function DistrictPage({ params }: { params: { id: string } }) {
   const maxBar = Math.max(...stats.monthlyMedianM2, 1);
 
   return (
-    <main className="wrap">
+    <>
+      <ScreenHeader title={`حي ${d.nameAr}`} back />
+      <main className="wrap">
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <h1 className="h1" style={{ marginBottom: 0 }}>حي {d.nameAr} — الرياض</h1>
         {frozen && <span className="badge info">⚖ داخل نطاق تجميد الإيجارات</span>}
       </div>
       <p className="sub">
@@ -91,7 +93,7 @@ export default function DistrictPage({ params }: { params: { id: string } }) {
       <div className="grid3">
         {listings.map((l) => (
           <Link key={l.id} href={`/listings/${l.id}`} className="listing-card">
-            <div className={`photo g${l.photoSeed % 4 === 0 ? 1 : l.photoSeed % 4}`} style={{ height: 86, fontSize: 26 }}>⌂</div>
+            <MediaEmpty height={86} label="لا صور" />
             <div style={{ padding: "10px 13px 12px" }}>
               <b style={{ fontSize: 14.5, color: "var(--navy)" }}>{sar(l.price)} ريال{l.listingType === "rent" ? "/سنة" : ""}</b>
               <div style={{ fontSize: 12, fontWeight: 700, marginTop: 2 }}>{l.title}</div>
@@ -110,5 +112,6 @@ export default function DistrictPage({ params }: { params: { id: string } }) {
         صفحة مفهرسة ثنائية اللغة (schema.org في الإنتاج) — بيانات استرشادية وليست تقييماً معتمداً
       </p>
     </main>
+    </>
   );
 }

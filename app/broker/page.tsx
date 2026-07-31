@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getDb } from "@/lib/store";
 import { sar } from "@/lib/format";
 import { BrokerLeadActions, ConfirmListingButton } from "@/components/BrokerLeadActions";
+import { ScreenHeader } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,9 @@ export default function BrokerPage() {
   const needConfirm = live.filter((l) => daysSince(l.lastConfirmedAt ?? l.createdAt) >= 30);
 
   return (
-    <main className="wrap">
+    <>
+      <ScreenHeader title="مساحة الوسيط" back />
+      <main className="wrap">
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div>
           <h1 className="h1" style={{ marginBottom: 2 }}>مكتب المستقبل العقاري 💼</h1>
@@ -167,5 +170,6 @@ export default function BrokerPage() {
         الجودة قرار اقتصادي (E7.2)
       </p>
     </main>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LEASES } from "@/lib/leases";
 import { sar } from "@/lib/format";
+import { ScreenHeader } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -23,8 +24,9 @@ export default function EjarPackPage() {
   const done = items.filter((i) => i.ok).length;
 
   return (
-    <main className="wrap" style={{ maxWidth: 720 }}>
-      <h1 className="h1">حزمة الجاهزية لإيجار 📄</h1>
+    <>
+      <ScreenHeader title="حزمة الجاهزية لإيجار" back />
+      <main className="wrap">
       <p className="sub">
         {lease.propertyTitle} ← المستأجر: {lease.tenantName}. العقد الملزم يُسجَّل في منصة «إيجار»
         الرسمية — فَنر لا يحرر عقوداً؛ جهّزنا كل البيانات لتُسجّل في دقائق.
@@ -67,5 +69,6 @@ export default function EjarPackPage() {
         (R3.2.3) — وتنبيهات الطرفين معاً.
       </p>
     </main>
+    </>
   );
 }

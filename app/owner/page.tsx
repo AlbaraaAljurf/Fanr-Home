@@ -3,6 +3,7 @@ import { getDb } from "@/lib/store";
 import { estimateSale } from "@/lib/avm";
 import { sar, TYPE_LABELS, CONF_LABELS } from "@/lib/format";
 import { LEASES, renewalStage } from "@/lib/leases";
+import { ScreenHeader, MediaEmpty } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +13,9 @@ export default function OwnerPage() {
   const ownerListings = db.listings.filter((l) => l.advertiserType === "owner_self_listing");
 
   return (
-    <main className="wrap">
-      <h1 className="h1">أملاكي 🔑</h1>
+    <>
+      <ScreenHeader title="أملاكي" />
+      <main className="wrap">
       <p className="sub">
         لوحة المالك — تتبّع قيمة عقاراتك شهرياً، وأعلن عنها بشارة «مالك» الموثّقة.
         (المطالبة بالعقار في الإنتاج تتم عبر نفاذ + التحقق من الصك؛ هنا حساب تجريبي مُهيأ مسبقاً.)
@@ -58,12 +60,7 @@ export default function OwnerPage() {
           );
           return (
             <div key={c.id} className="card">
-              <div className={`photo`} style={{ height: 120, borderRadius: "16px 16px 0 0", fontSize: 34 }}>
-                ⌂
-                <span className="badge" style={{ position: "absolute", top: 10, insetInlineStart: 10, background: "#fff", color: "var(--navy)" }}>
-                  ✓ مُطالَب بها — {c.ownerName}
-                </span>
-              </div>
+              <MediaEmpty height={90} label="لا صور للعقار" />
               <div className="cpad">
                 <h3 className="ct" style={{ marginBottom: 4 }}>{c.title}</h3>
                 <div style={{ fontSize: 12, color: "var(--ink-3)" }}>
@@ -124,5 +121,6 @@ export default function OwnerPage() {
         </>
       )}
     </main>
+    </>
   );
 }

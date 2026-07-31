@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { LEASES, renewalStage, endDate } from "@/lib/leases";
 import { sar } from "@/lib/format";
+import { ScreenHeader } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
 export default function RenewalsPage() {
   return (
-    <main className="wrap" style={{ maxWidth: 820 }}>
-      <h1 className="h1">تقويم التجديدات 📆</h1>
+    <>
+      <ScreenHeader title="تقويم التجديدات" back />
+      <main className="wrap">
       <p className="sub">
         عقودك المسجلة في «إيجار» — القاعدة النظامية: العقد يتجدد تلقائياً بنفس القيمة ما لم يُخطر
         أي طرف الآخر قبل <b>60 يوماً</b> من الانتهاء. فَنر ينبّهك عند 90 و65 يوماً، قبل انقضاء المهلة.
@@ -72,5 +74,6 @@ export default function RenewalsPage() {
         <Link href="/guide/rent-freeze" style={{ color: "var(--primary)", fontWeight: 700 }}> دليل التجميد والتجديد التلقائي</Link>
       </p>
     </main>
+    </>
   );
 }

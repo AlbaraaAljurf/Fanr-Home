@@ -2,6 +2,7 @@ import { getDb } from "@/lib/store";
 import { legalRentFor } from "@/lib/avm";
 import { FREEZE_ZONE } from "@/lib/geo";
 import MapSearch, { MapListing } from "@/components/MapSearch";
+import { ScreenHeader } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -38,11 +39,14 @@ export default function SearchPage() {
   }));
 
   return (
-    <MapSearch
-      listings={listings}
-      freezeRing={FREEZE_ZONE.ring}
-      freezeVersion={FREEZE_ZONE.version}
-      districts={districtPolys}
-    />
+    <>
+      <ScreenHeader title="الخريطة" />
+      <MapSearch
+        listings={listings}
+        freezeRing={FREEZE_ZONE.ring}
+        freezeVersion={FREEZE_ZONE.version}
+        districts={districtPolys}
+      />
+    </>
   );
 }

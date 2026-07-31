@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getFavs, setFavs } from "@/components/FavButton";
 import { getSavedSearches, setSavedSearches, SavedSearch } from "@/lib/clientStore";
 import { sar, TYPE_LABELS } from "@/lib/format";
+import { ScreenHeader, MediaEmpty } from "@/components/Shell";
 
 interface CardData {
   id: string;
@@ -71,8 +72,9 @@ export default function SavedPage() {
   }
 
   return (
-    <main className="wrap">
-      <h1 className="h1">المحفوظات 🔖</h1>
+    <>
+      <ScreenHeader title="المحفوظات" />
+      <main className="wrap">
       <p className="sub">بحوثك المحفوظة ومفضلاتك — التنبيهات تصل فورياً/يومياً/أسبوعياً عبر الإشعارات وواتساب في الإنتاج</p>
 
       <h2 className="ct" style={{ fontSize: 17, margin: "6px 0 10px" }}>بحوثي المحفوظة</h2>
@@ -133,7 +135,7 @@ export default function SavedPage() {
         {favs.map((l) => (
           <div key={l.id} className="listing-card">
             <Link href={`/listings/${l.id}`}>
-              <div className={`photo g${l.photoSeed % 4 === 0 ? 1 : l.photoSeed % 4}`} style={{ height: 86, fontSize: 26 }}>⌂</div>
+              <MediaEmpty height={86} label="لا صور" />
             </Link>
             <div style={{ padding: "10px 13px 12px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -155,5 +157,6 @@ export default function SavedPage() {
         ))}
       </div>
     </main>
+    </>
   );
 }

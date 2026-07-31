@@ -3,6 +3,7 @@ import { sweepExpiredLicenses } from "@/lib/compliance";
 import { estimateRent, legalRentFor, yieldGuardrail } from "@/lib/avm";
 import { sar } from "@/lib/format";
 import AdminActions from "@/components/AdminActions";
+import { ScreenHeader } from "@/components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -30,8 +31,9 @@ export default function AdminPage() {
   const expired = db.listings.filter((l) => l.status === "expired");
 
   return (
-    <main className="wrap">
-      <h1 className="h1">وحدة الإشراف والالتزام 🛡</h1>
+    <>
+      <ScreenHeader title="وحدة الإشراف والالتزام" back />
+      <main className="wrap">
       <p className="sub">
         كل إجراء إداري مُسجَّل وغير قابل للتعديل في الإنتاج · فحص الرخص اليومي يعمل تلقائياً
         {swept > 0 && <b style={{ color: "var(--danger)" }}> — أوقف الآن {swept} إعلاناً برخصة منتهية</b>}
@@ -139,5 +141,6 @@ export default function AdminPage() {
         نطاق تجميد الرياض: نسخة الحدود riyadh-urban-v1-mvp (سارية من 25-09-2025) — تُستبدل بالمضلع الرسمي من أمانة الرياض عبر محرر الحدود المُصدَّر.
       </p>
     </main>
+    </>
   );
 }

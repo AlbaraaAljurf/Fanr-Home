@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { getDb, getListing, getDistrict } from "@/lib/store";
 import { estimateRent, estimateSale, legalRentFor } from "@/lib/avm";
 import { sar, TYPE_LABELS, FREEZE_LABELS, CONF_LABELS } from "@/lib/format";
-import LeadPanel from "@/components/LeadPanel";
-import FavButton from "@/components/FavButton";
+import { ScreenHeader, MediaEmpty } from "@/components/Shell";
+import ListingActionBar from "@/components/ListingActionBar";
+import { RentCheckerButton } from "@/components/RentCheckerSheet";
 
 export const dynamic = "force-dynamic";
 
@@ -16,15 +17,17 @@ export default function ListingPage({ params }: { params: { id: string } }) {
 
   if (l.status !== "live") {
     return (
-      <main className="wrap" style={{ maxWidth: 700 }}>
-        <div className="card"><div className="cpad" style={{ textAlign: "center" }}>
-          <h1 className="h1" style={{ fontSize: 20 }}>هذا الإعلان لم يعد متاحاً</h1>
-          <p className="sub" style={{ marginBottom: 14 }}>
-            أُوقف الإعلان تلقائياً — رخصة الإعلان العقاري الخاصة به انتهت أو أُلغيت (تُراجع الرخص يومياً).
-          </p>
-          <Link className="btn" href="/search">عُد إلى البحث</Link>
-        </div></div>
-      </main>
+      <>
+        <ScreenHeader title="الإعلان" back />
+        <div className="content">
+          <div className="card"><div className="empty-state">
+            <span className="ei">⛔</span>
+            <b>هذا الإعلان لم يعد متاحاً</b>
+            <p>أُوقف تلقائياً — رخصة الإعلان انتهت أو أُلغيت (تُراجع الرخص يومياً).</p>
+            <Link className="btn sm" style={{ marginTop: 12 }} href="/search">عُد إلى البحث</Link>
+          </div></div>
+        </div>
+      </>
     );
   }
 
@@ -33,202 +36,172 @@ export default function ListingPage({ params }: { params: { id: string } }) {
   const lr = isRent ? legalRentFor(l, d) : null;
   const similar = db.listings
     .filter((x) => x.id !== l.id && x.status === "live" && x.districtId === l.districtId && x.listingType === l.listingType)
-    .slice(0, 3);
+    .slice(0, 2);
   const deltaPct = Math.round(((l.price - est.value) / est.value) * 100);
+  const stale = (Date.now() - new Date(l.lastConfirmedAt ?? l.createdAt).getTime()) / 86400000 > 45;
 
   return (
-    <main className="wrap">
-      <div className={`photo g${l.photoSeed % 4 === 0 ? 1 : l.photoSeed % 4}`} style={{ height: 250, borderRadius: 18, fontSize: 60 }}>
-        ⌂
-        <span className="badge" style={{ position: "absolute", bottom: 12, insetInlineStart: 12, background: "rgba(19,26,42,.72)", color: "#fff" }}>
-          صور العقار تُرفع عبر خط الوسائط في الإنتاج — عنصر نائب
-        </span>
-      </div>
+    <>
+      <ScreenHeader title={TYPE_LABELS[l.propertyType] + " — " + d.nameAr} back />
+      <div className="content flush">
+        {/* Full-bleed media region — honest empty state until real photos exist */}
+        <MediaEmpty height={210} />
 
-      <div style={{ display: "flex", gap: 20, marginTop: 18, flexWrap: "wrap" }}>
-        <div style={{ flex: 1.6, minWidth: 320 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ padding: "14px 16px 18px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: "var(--navy)" }}>
+              <div style={{ fontSize: 23, fontWeight: 700, color: "var(--navy)" }}>
                 {sar(l.price)} ريال{isRent ? "/سنة" : ""}
               </div>
-              <h1 style={{ fontSize: 18, fontWeight: 800, margin: "6px 0 2px" }}>{l.title}</h1>
-              <div style={{ fontSize: 12.5, color: "var(--ink-3)" }}>
-                {d.nameAr}، الرياض · <span style={{ direction: "ltr" }}>{l.ref}</span> · الموقع {l.locationPrecision === "approximate" ? "تقريبي بطلب المُعلن — الحي دقيق" : "دقيق"}
+              <div style={{ fontSize: 14, fontWeight: 700, margin: "4px 0 2px" }}>{l.title}</div>
+              <div style={{ fontSize: 11, color: "var(--ink-3)" }}>
+                {d.nameAr}، الرياض · <span style={{ direction: "ltr" }}>{l.ref}</span>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-              {deltaPct <= -5 && <span className="badge gold">★ أقل من تقدير فَنر بـ {Math.abs(deltaPct)}٪</span>}
-              {deltaPct >= 8 && <span className="badge warn">أعلى من تقدير فَنر بـ {deltaPct}٪</span>}
-              <FavButton listingId={l.id} />
-            </div>
+            {deltaPct <= -5 && <span className="badge gold">★ أقل من تقدير فَنر بـ {Math.abs(deltaPct)}٪</span>}
+            {deltaPct >= 8 && <span className="badge warn">أعلى من تقدير فَنر بـ {deltaPct}٪</span>}
           </div>
 
-          {(Date.now() - new Date(l.lastConfirmedAt ?? l.createdAt).getTime()) / 86400000 > 45 && (
+          {stale && (
             <div style={{ display: "flex", gap: 8, background: "var(--warn-bg)", border: "1.4px solid var(--warn-line)", borderRadius: 12, padding: "10px 13px", marginTop: 12 }}>
               <span>⏳</span>
-              <span style={{ fontSize: 13, color: "var(--warn)", fontWeight: 700 }}>
-                لم يؤكد المُعلن توفر هذا العقار منذ أكثر من 45 يوماً — قد لا يكون متاحاً. اطلب تأكيداً قبل المعاينة.
+              <span style={{ fontSize: 12.5, color: "var(--warn)", fontWeight: 700 }}>
+                لم يؤكد المُعلن التوفر منذ أكثر من 45 يوماً — اطلب تأكيداً قبل المعاينة.
               </span>
             </div>
           )}
 
-          <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, marginTop: 12, overflowX: "auto", paddingBottom: 2 }}>
             {[
-              [TYPE_LABELS[l.propertyType], "النوع"],
-              [`${l.areaM2} م²`, "المساحة"],
-              [`${l.bedrooms}`, "غرف"],
-              [`${l.bathrooms}`, "دورات مياه"],
-              [`${l.ageYears} سنوات`, "العمر"],
-              [l.corner ? "زاوية" : `شارع ${l.streetWidthM}م`, "الموقع"],
+              [`${l.areaM2} م²`, "المساحة"], [`${l.bedrooms}`, "غرف"], [`${l.bathrooms}`, "دورات"],
+              [`${l.ageYears} سنة`, "العمر"], [l.corner ? "زاوية" : `${l.streetWidthM}م`, "الشارع"],
             ].map(([v, k]) => (
-              <div key={k as string} className="card" style={{ padding: "9px 16px", textAlign: "center" }}>
-                <b style={{ fontSize: 14 }}>{v}</b>
-                <div style={{ fontSize: 10, color: "var(--ink-3)" }}>{k}</div>
+              <div key={k as string} className="card" style={{ padding: "8px 14px", textAlign: "center", flex: "none" }}>
+                <b style={{ fontSize: 13.5 }}>{v}</b>
+                <div style={{ fontSize: 9.5, color: "var(--ink-3)" }}>{k}</div>
               </div>
             ))}
           </div>
 
           {isRent && lr && lr.insideFreezeZone && (
-            <div className="legal" style={{ marginTop: 16 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>⚖ الوضع النظامي للإيجار — الرياض</div>
+            <div className="legal" style={{ marginTop: 14 }}>
+              <b style={{ fontSize: 14.5, color: "var(--navy)" }}>⚖ الوضع النظامي للإيجار — الرياض</b>
               <div className="kv" style={{ marginTop: 8 }}>
                 <span className="k">وضع العقار في 25 سبتمبر 2025</span>
                 <span className="v">{l.freezeStatus ? FREEZE_LABELS[l.freezeStatus] : "غير مُعلن"}</span>
               </div>
               {lr.legalCap != null ? (
                 <>
-                  <div className="kv"><span className="k">السقف النظامي للإيجار</span><span className="v" style={{ color: "var(--navy)", fontSize: 17 }}>{sar(lr.legalCap)} ريال/سنة</span></div>
+                  <div className="kv"><span className="k">السقف النظامي</span><span className="v" style={{ color: "var(--navy)", fontSize: 16 }}>{sar(lr.legalCap)} ريال/سنة</span></div>
                   <div className="disc">{lr.capSource}</div>
-                  <div className="kv" style={{ marginTop: 6 }}><span className="k">التقدير السوقي (استرشادي فقط)</span><span className="k">{sar(est.value)} ريال/سنة</span></div>
-                  {lr.verdict === "within_cap" && <span className="badge ok" style={{ marginTop: 8 }}>✓ الإعلان الحالي ضمن السقف النظامي</span>}
+                  {lr.verdict === "within_cap" && <span className="badge ok" style={{ marginTop: 8 }}>✓ الإعلان ضمن السقف النظامي</span>}
                   {lr.verdict === "above_cap" && (
                     <span className="badge danger" style={{ marginTop: 8 }}>
-                      ✕ المطلوب أعلى من السقف النظامي بـ {Math.round(((l.price - lr.legalCap) / lr.legalCap) * 100)}٪ — تنبيه التزام مُسجَّل
+                      ✕ المطلوب أعلى من السقف بـ {Math.round(((l.price - lr.legalCap) / lr.legalCap) * 100)}٪ — تنبيه التزام مُسجَّل
                     </span>
                   )}
                 </>
               ) : (
-                <p style={{ fontSize: 13, color: "var(--ink-2)", margin: "6px 0 0", lineHeight: 1.7 }}>
-                  {lr.capSource} — القاعدة: السقف = قيمة آخر عقد موثّق في «إيجار». لا نخمّن الأرقام؛ تحقق من قيمة عقدك في منصة إيجار.
+                <p style={{ fontSize: 12.5, color: "var(--ink-2)", margin: "6px 0 0", lineHeight: 1.7 }}>
+                  {lr.capSource} — القاعدة: السقف = قيمة آخر عقد موثّق في «إيجار». لا نخمّن الأرقام؛ تحقق من عقدك في منصة إيجار.
                 </p>
               )}
-              <div style={{ display: "flex", gap: 14, marginTop: 10, flexWrap: "wrap" }}>
-                <Link href="/guide/rent-freeze" style={{ fontSize: 13, fontWeight: 800, color: "var(--info)" }}>
-                  ما معنى هذا؟ — دليل التجميد ‹
-                </Link>
-                <Link href="/rent-checker" style={{ fontSize: 13, fontWeight: 800, color: "var(--info)" }}>
-                  تحقق من وضعك مجاناً ‹
-                </Link>
+              <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                <RentCheckerButton className="btn soft sm auto" label="تحقق من وضعك" />
+                <Link href="/guide/rent-freeze" className="btn ghost sm auto" style={{ display: "inline-flex" }}>دليل التجميد</Link>
               </div>
             </div>
           )}
 
-          <div className="card" style={{ marginTop: 14 }}><div className="cpad">
-            <h3 className="ct">تقدير فَنر <span className="badge info" style={{ marginInlineStart: 6 }}>{CONF_LABELS[est.confidence]}</span></h3>
-            <div style={{ fontSize: 22, fontWeight: 900, color: "var(--navy)" }}>
+          <div className="card" style={{ marginTop: 12 }}><div className="cpad">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <b style={{ fontSize: 15 }}>تقدير فَنر</b>
+              <span className="badge info">{CONF_LABELS[est.confidence]}</span>
+            </div>
+            <div style={{ fontSize: 19, fontWeight: 700, color: "var(--navy)", marginTop: 6 }}>
               {sar(est.low)} – {sar(est.high)} ريال{isRent ? "/سنة" : ""}
             </div>
-            <div className="kv" style={{ marginTop: 4 }}>
-              <span className="k">نقطة التقدير</span><span className="v">{sar(est.value)} ريال</span>
-            </div>
+            <div className="kv"><span className="k">نقطة التقدير</span><span className="v">{sar(est.value)} ريال</span></div>
             <div className="kv">
               <span className="k">الأساس</span>
-              <span className="v">وسيط الحي {est.districtBaseM2.toLocaleString("en-US")} ريال/م² · {est.basisTxCount} صفقة مرجعية</span>
-            </div>
-            <div className="kv">
-              <span className="k">عوامل التسوية المطبقة</span>
-              <span className="v" style={{ direction: "ltr", fontSize: 12 }}>
-                {est.factorsApplied.map((f) => `${f.key} ×${f.factor.toFixed(2)}`).join(" · ")}
-              </span>
+              <span className="v">وسيط الحي {est.districtBaseM2.toLocaleString("en-US")} ريال/م²</span>
             </div>
             {est.compEstimate != null && (
               <div className="kv">
                 <span className="k">المزج (الطبقة 3)</span>
-                <span className="v" style={{ fontSize: 12 }}>
-                  {Math.round((1 - est.w2) * 100)}٪ نموذج السمات ({sar(est.hedonicEstimate)}) + {Math.round(est.w2 * 100)}٪ الصفقات المشابهة ({sar(est.compEstimate)})
+                <span className="v" style={{ fontSize: 11.5 }}>
+                  {Math.round((1 - est.w2) * 100)}٪ سمات + {Math.round(est.w2 * 100)}٪ صفقات مشابهة
                 </span>
               </div>
             )}
             {est.compsUsed.length > 0 && (
-              <details style={{ marginTop: 8 }}>
-                <summary style={{ fontSize: 13, fontWeight: 800, color: "var(--primary)", cursor: "pointer" }}>
-                  الصفقات المشابهة المستخدمة ({est.compsUsed.length}) — الشفافية الكاملة
+              <details style={{ marginTop: 6 }}>
+                <summary style={{ fontSize: 12.5, fontWeight: 700, color: "var(--primary)", minHeight: 44, display: "flex", alignItems: "center" }}>
+                  الصفقات المشابهة المستخدمة ({est.compsUsed.length})
                 </summary>
-                <div className="tbl-wrap" style={{ marginTop: 8 }}>
+                <div className="tbl-wrap">
                   <table className="tbl">
-                    <thead>
-                      <tr><th>المساحة</th><th>سعر الصفقة</th><th>بعد التسوية</th><th>قبل</th><th>البعد</th></tr>
-                    </thead>
+                    <thead><tr><th>المساحة</th><th>الصفقة</th><th>بعد التسوية</th><th>قبل</th></tr></thead>
                     <tbody>
-                      {est.compsUsed.slice(0, 6).map((c) => (
+                      {est.compsUsed.map((c) => (
                         <tr key={c.id}>
                           <td>{c.areaM2} م²</td>
                           <td>{sar(c.price)}</td>
                           <td style={{ fontWeight: 700 }}>{sar(c.adjustedPrice)}</td>
                           <td>{Math.round(c.daysAgo / 30)} أشهر</td>
-                          <td>{c.distanceKm} كم</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <p className="disc" style={{ marginTop: 6 }}>
-                  كل صفقة مسوّاة إلى خصائص هذا العقار (نسبة العوامل + تعديل زمني) ثم يؤخذ الوسيط
-                  الموزون: حداثة (نصف عمر 6 أشهر) × قرب جغرافي × تشابه سمات
-                </p>
               </details>
             )}
             <hr className="hr" />
-            <p className="disc">
-              تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً — النموذج {est.modelVersion} (الطبقتان 1–2؛
-              طبقة الصفقات المشابهة تصل في المرحلة الثانية). للحصول على تقييم معتمد يمكن إحالتك لمقيّم مرخّص من «تقييم».
+            <p className="disc" style={{ margin: 0 }}>
+              تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً — النموذج {est.modelVersion}
             </p>
           </div></div>
 
-          <div className="card" style={{ marginTop: 14 }}><div className="cpad">
-            <h3 className="ct">التوثيق</h3>
-            <div className="kv"><span className="k">✓ رخصة إعلان عقاري</span><span className="v" style={{ direction: "ltr" }}>{l.adLicense.number} · سارية حتى {new Date(l.adLicense.expiresAt).toLocaleDateString("en-GB")}</span></div>
+          <div className="card" style={{ marginTop: 12 }}><div className="cpad">
+            <b style={{ fontSize: 15 }}>التوثيق</b>
+            <div className="kv" style={{ marginTop: 6 }}><span className="k">✓ رخصة إعلان عقاري</span><span className="v" style={{ direction: "ltr" }}>{l.adLicense.number}</span></div>
             {l.falNumber && <div className="kv"><span className="k">✓ وسيط مرخّص فال</span><span className="v" style={{ direction: "ltr" }}>{l.falNumber}</span></div>}
-            {l.advertiserType === "owner_self_listing" && <div className="kv"><span className="k">✓ مالك يعلن عن عقاره</span><span className="v">هوية موثّقة عبر نفاذ (تكامل الإنتاج)</span></div>}
-            <div className="kv"><span className="k">إعادة التحقق</span><span className="v">يومياً — الرخص المنتهية تُوقف الإعلان تلقائياً</span></div>
+            {l.advertiserType === "owner_self_listing" && <div className="kv"><span className="k">✓ مالك موثّق</span><span className="v">عبر نفاذ</span></div>}
+            <div className="kv"><span className="k">إعادة التحقق</span><span className="v">يومياً — المنتهية تُوقف تلقائياً</span></div>
           </div></div>
+
+          <Link href={`/districts/${d.id}`} className="card" style={{ display: "flex", alignItems: "center", gap: 10, padding: 14, marginTop: 12 }}>
+            <span style={{ fontSize: 17 }}>📊</span>
+            <div style={{ flex: 1 }}>
+              <b style={{ fontSize: 14 }}>بيانات حي {d.nameAr}</b>
+              <div className="cs">الوسيط والاتجاه والمعروض</div>
+            </div>
+            <span style={{ color: "var(--ink-3)" }}>‹</span>
+          </Link>
 
           {similar.length > 0 && (
             <>
-              <h3 className="ct" style={{ margin: "18px 0 10px" }}>عقارات مشابهة في {d.nameAr}</h3>
-              <div className="grid3">
+              <b style={{ fontSize: 15, display: "block", margin: "16px 0 8px" }}>عقارات مشابهة في {d.nameAr}</b>
+              <div className="grid2">
                 {similar.map((s) => (
                   <Link key={s.id} href={`/listings/${s.id}`} className="listing-card">
-                    <div className={`photo g${s.photoSeed % 4 === 0 ? 1 : s.photoSeed % 4}`} style={{ height: 80, fontSize: 26 }}>⌂</div>
-                    <div style={{ padding: "9px 12px 11px" }}>
-                      <b style={{ fontSize: 13.5, color: "var(--navy)" }}>{sar(s.price)} ريال{s.listingType === "rent" ? "/سنة" : ""}</b>
-                      <div style={{ fontSize: 11.5, color: "var(--ink-3)", marginTop: 2 }}>{s.title}</div>
+                    <MediaEmpty height={64} label="لا صور" />
+                    <div style={{ padding: "8px 11px 10px" }}>
+                      <b style={{ fontSize: 13, color: "var(--navy)" }}>{sar(s.price)}{s.listingType === "rent" ? "/سنة" : ""}</b>
+                      <div style={{ fontSize: 10.5, color: "var(--ink-3)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
                     </div>
                   </Link>
                 ))}
               </div>
             </>
           )}
-        </div>
 
-        <div style={{ flex: 1, minWidth: 300 }}>
-          <LeadPanel listingId={l.id} advertiserName={l.advertiserName} advertiserType={l.advertiserType} />
-          <div className="card" style={{ marginTop: 14 }}><div className="cpad">
-            <h3 className="ct">
-              <Link href={`/districts/${d.id}`} style={{ color: "var(--primary)" }}>بيانات حي {d.nameAr} ‹</Link>
-            </h3>
-            <div className="kv"><span className="k">إيجار سنوي وسيط</span><span className="v">{d.baseRentM2Annual} ريال/م²</span></div>
-            <div className="kv"><span className="k">سعر بيع وسيط</span><span className="v">{d.basePriceM2Sale.toLocaleString("en-US")} ريال/م²</span></div>
-            <div className="kv"><span className="k">الاتجاه 12 شهراً</span><span className="v" style={{ color: "var(--ok)" }}>‎+{d.trend12mPct}٪</span></div>
-            <div className="kv"><span className="k">متوسط البقاء بالسوق</span><span className="v">{d.avgDaysOnMarket} يوماً</span></div>
-          </div></div>
+          <p className="disc" style={{ textAlign: "center", marginTop: 16 }}>
+            رقم الرخصة معروض التزاماً بلائحة الإعلانات العقارية · بيانات المُعلن تُعرض بعد إنشاء طلب تواصل
+          </p>
         </div>
       </div>
-
-      <p className="disc" style={{ textAlign: "center", marginTop: 26 }}>
-        رقم رخصة الإعلان معروض التزاماً بلائحة الإعلانات العقارية · بيانات المُعلن تُعرض بعد إنشاء طلب تواصل (حماية من الانتحال)
-      </p>
-    </main>
+      <ListingActionBar listingId={l.id} advertiserName={l.advertiserName} advertiserType={l.advertiserType} />
+    </>
   );
 }

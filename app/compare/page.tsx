@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getFavs } from "@/components/FavButton";
 import { sar, TYPE_LABELS, FREEZE_LABELS } from "@/lib/format";
+import { ScreenHeader, MediaEmpty } from "@/components/Shell";
 
 interface Row {
   id: string;
@@ -40,8 +41,9 @@ export default function ComparePage() {
 
   if (rows.length < 2) {
     return (
-      <main className="wrap" style={{ maxWidth: 700 }}>
-        <h1 className="h1">قارن العقارات ⇄</h1>
+      <>
+      <ScreenHeader title="قارن العقارات" back />
+      <main className="wrap">
         <div className="card"><div className="cpad" style={{ textAlign: "center", color: "var(--ink-2)" }}>
           {loaded ? (
             <>
@@ -53,6 +55,7 @@ export default function ComparePage() {
           )}
         </div></div>
       </main>
+      </>
     );
   }
 
@@ -87,8 +90,9 @@ export default function ComparePage() {
   ];
 
   return (
-    <main className="wrap">
-      <h1 className="h1">قارن العقارات ⇄</h1>
+    <>
+      <ScreenHeader title="قارن العقارات" back />
+      <main className="wrap">
       <p className="sub">أول {rows.length} من مفضلاتك — الخلية المظللة هي الأفضل في صفّها</p>
       <div className="tbl-wrap card">
         <table className="tbl" style={{ minWidth: 640 }}>
@@ -107,7 +111,7 @@ export default function ComparePage() {
               <td></td>
               {rows.map((r) => (
                 <td key={r.id}>
-                  <div className={`photo g${r.photoSeed % 4 === 0 ? 1 : r.photoSeed % 4}`} style={{ height: 64, borderRadius: 10, fontSize: 22 }}>⌂</div>
+                  <MediaEmpty tile height={64} label="لا صور" />
                 </td>
               ))}
             </tr>
@@ -131,5 +135,6 @@ export default function ComparePage() {
         تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً معتمداً · المشاركة الثنائية (co-shopping) تصل في المرحلة الثانية
       </p>
     </main>
+    </>
   );
 }

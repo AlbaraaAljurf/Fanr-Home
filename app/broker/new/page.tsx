@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { FREEZE_LABELS, TYPE_LABELS } from "@/lib/format";
+import { ScreenHeader } from "@/components/Shell";
 
 function NewListingForm() {
   const router = useRouter();
@@ -83,8 +84,9 @@ function NewListingForm() {
   }
 
   return (
-    <main className="wrap" style={{ maxWidth: 780 }}>
-      <h1 className="h1">إعلان جديد — {asOwner ? "مسار المالك 👤" : "مسار الوسيط 💼"}</h1>
+    <>
+      <ScreenHeader title="إعلان جديد" back />
+      <main className="wrap">
       <p className="sub">
         لا يُنشر أي إعلان دون رخصة إعلان عقاري سارية متحقَّق منها (نظام الوساطة العقارية —
         م/130). إيجارات الرياض تتطلب إعلان وضع التجميد وقيمة آخر عقد موثّق.
@@ -189,6 +191,7 @@ function NewListingForm() {
         </p>
       </form>
     </main>
+    </>
   );
 }
 

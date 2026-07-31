@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TYPE_LABELS } from "@/lib/format";
+import { ScreenHeader } from "@/components/Shell";
 
 const DISTRICTS = [
   ["al-malqa", "الملقا"], ["hittin", "حطين"], ["al-narjis", "النرجس"], ["al-yasmin", "الياسمين"],
@@ -56,8 +57,9 @@ export default function ClaimPage() {
   );
 
   return (
-    <main className="wrap" style={{ maxWidth: 640 }}>
-      <h1 className="h1">اطلب ملكية عقارك 🏠</h1>
+    <>
+      <ScreenHeader title="اطلب ملكية عقارك" back />
+      <main className="wrap">
       <p className="sub">تابع قيمته شهرياً، وصحّح بياناته، وأعلن عنه بشارة «مالك» الموثّقة</p>
 
       <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
@@ -145,5 +147,6 @@ export default function ClaimPage() {
         </div></div>
       )}
     </main>
+    </>
   );
 }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fanr Homes — Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/design.css">
+</head>
+<body class="en">
+
+<header class="site-head" style="padding:26px 22px 24px">
+  <h1 style="font-size:26px;margin-top:0">Design System — نظام التصميم</h1>
+  <p>Foundations and components for Fanr Homes, per the Fanr brand book (PRD §8.6). Somar is the brand typeface; Tajawal is the digital substitute used here.</p>
+</header>
+
+<nav class="site-nav">
+  <a href="index.html">Overview</a>
+  <a class="on" href="design-system.html">Design System</a>
+  <a href="screens-core.html">Core &amp; Discovery</a>
+  <a href="screens-property.html">Property &amp; Legal Rent</a>
+  <a href="screens-owner.html">Owner &amp; Landlord</a>
+  <a href="screens-broker.html">Broker &amp; Developer</a>
+  <a href="screens-invest-data.html">Investor · Data · AI</a>
+</nav>
+
+<main class="wrap">
+
+  <h2 class="section-h">1 · Brand palette</h2>
+  <p class="section-sub">The five brand colours from the Fanr brand book, plus the app-surface tokens taken from the live Fanr app UI.</p>
+  <div class="sw-grid">
+    <div class="sw"><div class="c" style="background:#1A3C8F"></div><div class="m"><b>Navy — الأساس</b><span>#1A3C8F</span></div></div>
+    <div class="sw"><div class="c" style="background:#29ABE2"></div><div class="m"><b>Sky</b><span>#29ABE2</span></div></div>
+    <div class="sw"><div class="c" style="background:#4DB560"></div><div class="m"><b>Green</b><span>#4DB560</span></div></div>
+    <div class="sw"><div class="c" style="background:#F5C518"></div><div class="m"><b>Gold</b><span>#F5C518</span></div></div>
+    <div class="sw"><div class="c" style="background:#6C757D"></div><div class="m"><b>Gray</b><span>#6C757D</span></div></div>
+    <div class="sw"><div class="c" style="background:linear-gradient(120deg,#1E3FA8,#3B5FD4)"></div><div class="m"><b>Header gradient</b><span>#1E3FA8 → #3B5FD4</span></div></div>
+    <div class="sw"><div class="c" style="background:#2B4FD8"></div><div class="m"><b>Primary action</b><span>#2B4FD8</span></div></div>
+    <div class="sw"><div class="c" style="background:#EEF2FF;border-bottom:1px solid #E3E8F4"></div><div class="m"><b>Selected state</b><span>#EEF2FF on #2B4FD8</span></div></div>
+    <div class="sw"><div class="c" style="background:#F5F7FF;border-bottom:1px solid #E3E8F4"></div><div class="m"><b>Body background</b><span>#F5F7FF</span></div></div>
+  </div>
+
+  <h2 class="section-h">2 · Semantic colour</h2>
+  <p class="section-sub">Meaning is never carried by colour alone — every semantic use pairs colour with an icon or a text label (WCAG 2.1 AA, PRD §8.5).</p>
+  <table class="spec-table">
+    <tr><th>Token</th><th>Use</th><th>Values</th></tr>
+    <tr><td><span class="badge ok">✓ نظامي</span></td><td>Verified / compliant / within legal cap</td><td>text #2E8540 on #EAF7EE</td></tr>
+    <tr><td><span class="badge warn">⚠ تنبيه التزام</span></td><td>Compliance warnings (advisory, not blocking, V1) — e.g. asking rent above legal cap</td><td>text #9A7B0A on #FEF8E7</td></tr>
+    <tr><td><span class="badge danger">✕ أعلى من السقف</span></td><td>Violations, expired licences, unpublished listings</td><td>text #C0392B on #FDEEEC</td></tr>
+    <tr><td><span class="badge info">⚖ مؤشر نظامي</span></td><td>Legal Rent Indicator surfaces, regulatory info</td><td>text #1877B4 on #EAF6FD</td></tr>
+    <tr><td><span class="badge gold">★ فرصة</span></td><td>Value opportunities (price below تقدير فَنر), featured</td><td>text #8A6D06 on #FEF6D8</td></tr>
+  </table>
+
+  <h2 class="section-h">3 · Typography</h2>
+  <p class="section-sub">Tajawal for Arabic + Latin. Numbers always render in Latin digits for prices and licence numbers (scannability); Arabic-Indic digits are acceptable in prose only.</p>
+  <div class="card"><div class="cpad" dir="rtl">
+    <div class="type-row"><span class="spec" dir="ltr">Display · 26/800</span><span style="font-size:26px;font-weight:800;color:var(--navy)">كل عقار له صفحة</span></div>
+    <div class="type-row"><span class="spec" dir="ltr">H1 · 20/800</span><span style="font-size:20px;font-weight:800">تقدير فَنر: 1.42 – 1.61 مليون</span></div>
+    <div class="type-row"><span class="spec" dir="ltr">H2 · 16/800</span><span style="font-size:16px;font-weight:800">الوضع النظامي للإيجار</span></div>
+    <div class="type-row"><span class="spec" dir="ltr">Body · 13.5/500</span><span style="font-size:13.5px">فيلا مودرن في حي الملقا، شمال الرياض — دور أرضي مع ملحق</span></div>
+    <div class="type-row"><span class="spec" dir="ltr">Caption · 11/500</span><span style="font-size:11px;color:var(--ink-3)">آخر تحديث قبل ٣ أيام · رقم الإعلان 7200481963</span></div>
+    <div class="type-row" style="border-bottom:none"><span class="spec" dir="ltr">Legal · 9.5/500</span><span style="font-size:9.5px;color:var(--ink-3)">تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً</span></div>
+  </div></div>
+
+  <h2 class="section-h">4 · Buttons &amp; controls</h2>
+  <div class="demo-row" dir="rtl">
+    <a class="btn" style="width:170px">أضف إعلانك</a>
+    <a class="btn ghost" style="width:170px">احصل على تقييم معتمد</a>
+    <a class="btn soft" style="width:150px">حفظ البحث</a>
+    <a class="btn grn" style="width:150px">تواصل مع الوسيط</a>
+    <span class="chip">3 غرف</span>
+    <span class="chip sel">شقة</span>
+    <span class="chip">أقل من 70 ألف</span>
+  </div>
+  <div class="demo-row" dir="rtl">
+    <div class="seg" style="width:290px"><span class="op on">إيجار</span><span class="op">بيع</span><span class="op">مشاريع</span></div>
+    <div class="field" style="width:250px;margin:0"><label>الحي</label><div class="in">الملقا، الرياض <span>▾</span></div></div>
+  </div>
+
+  <h2 class="section-h">5 · Signature components</h2>
+  <p class="section-sub">The three modules that define Fanr Homes and appear across the whole app.</p>
+
+  <div class="two-col">
+    <div>
+      <div class="card" dir="rtl"><div class="cpad">
+        <div class="cs" style="margin-bottom:8px">A · وحدة تقدير فَنر — always range + confidence + disclaimer</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:21px;font-weight:800;color:var(--navy)">1.42 – 1.61 مليون</span>
+          <span class="badge info">ثقة عالية</span>
+        </div>
+        <div style="height:8px;border-radius:6px;margin:10px 0 4px;background:linear-gradient(90deg,#E3E8F4 0%,#29ABE2 30%,#1A3C8F 50%,#29ABE2 70%,#E3E8F4 100%);position:relative">
+          <span style="position:absolute;top:-4px;right:47%;width:3px;height:16px;background:var(--gold);border-radius:2px"></span>
+        </div>
+        <div class="kv"><span class="k">نقطة التقدير</span><span class="v">1.52 مليون ريال</span></div>
+        <div class="kv"><span class="k">صفقات مشابهة مستخدمة</span><span class="v">12 صفقة · آخر 9 أشهر</span></div>
+        <div class="hr"></div>
+        <div class="disc">تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً — التقييم المعتمد يصدر من مقيّم مرخّص من «تقييم»</div>
+      </div></div>
+      <p style="font-size:12px;color:var(--ink-2)">Requirements R-E4-2, R-E4-3, R3.5.1. The gold tick marks the asking price against the range.</p>
+    </div>
+
+    <div>
+      <div class="legal" dir="rtl">
+        <div class="lt">⚖ الوضع النظامي للإيجار — الرياض</div>
+        <div class="kv" style="margin-top:8px"><span class="k">السقف النظامي للإيجار</span><span class="v" style="color:var(--navy);font-size:14px">62,000 ريال/سنة</span></div>
+        <div style="font-size:9px;color:var(--ink-3)">المصدر: آخر عقد موثّق في إيجار قبل التجميد (25 سبتمبر 2025)</div>
+        <div class="kv"><span class="k">التقدير السوقي (للاسترشاد فقط)</span><span class="k">74,000 ريال/سنة</span></div>
+        <div class="badge ok" style="margin-top:8px">✓ الإعلان الحالي ضمن السقف النظامي</div>
+        <div style="font-size:10.5px;font-weight:800;color:var(--info);margin-top:9px">ما معنى هذا؟ ‹</div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-2)">The wedge (R3.3.1, §7.3): the legal cap is the primary number; market estimate is demoted to context. Verdict badge switches to ⚠/✕ states when asking &gt; cap.</p>
+    </div>
+
+    <div>
+      <div class="card" dir="rtl"><div class="cpad">
+        <div class="cs" style="margin-bottom:8px">C · حزمة التوثيق — verification stack on every listing</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div style="display:flex;align-items:center;gap:8px"><span class="badge ok">✓</span><span style="font-size:11.5px;flex:1">رخصة إعلان عقاري</span><span style="font-size:10.5px;font-weight:700;color:var(--ink-3)" dir="ltr">7200481963 · سارية</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span class="badge ok">✓</span><span style="font-size:11.5px;flex:1">وسيط مرخّص فال</span><span style="font-size:10.5px;font-weight:700;color:var(--ink-3)" dir="ltr">1100254</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span class="badge ok">✓</span><span style="font-size:11.5px;flex:1">هوية موثّقة عبر نفاذ</span><span style="font-size:10.5px;font-weight:700;color:var(--ink-3)">المُعلن</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span class="badge ok">✓</span><span style="font-size:11.5px;flex:1">صك التملّك متحقق</span><span style="font-size:10.5px;font-weight:700;color:var(--ink-3)">رقم محجوب</span></div>
+        </div>
+      </div></div>
+      <p style="font-size:12px;color:var(--ink-2)">R3.1.3, E13. Licence numbers display in full; deed numbers never do (hashed, R-E13). Expired licence flips the row to ✕ and unpublishes the listing (R3.1.4).</p>
+    </div>
+
+    <div>
+      <div class="card" dir="rtl" style="overflow:hidden">
+        <div class="photo" style="height:118px">
+          <span class="badge gold" style="position:absolute;top:9px;right:9px">★ فرصة — أقل من التقدير بـ 6٪</span>
+          <span class="badge" style="position:absolute;bottom:9px;right:9px;background:rgba(19,26,42,.72);color:#fff">📷 14</span>
+        </div>
+        <div class="cpad">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <b style="font-size:15px;color:var(--navy)">1,430,000 ريال</b>
+            <span style="font-size:9px;color:var(--ink-3)" dir="ltr">FNR-RYD-00042931</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;margin-top:2px">فيلا دورين وملحق — حي الملقا</div>
+          <div style="font-size:10.5px;color:var(--ink-3);margin-top:2px">380 م² · 5 غرف · 6 دورات مياه · عمر 4 سنوات</div>
+          <div style="display:flex;gap:6px;margin-top:8px"><span class="badge ok">✓ إعلان مرخّص</span><span class="badge navy">وسيط فال</span><span class="badge info">جولة 3D</span></div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-2)">D · Listing card: price first, reference code, verification badges, and the “best value vs تقدير فَنر” opportunity badge (R-E2-6).</p>
+    </div>
+  </div>
+
+  <h2 class="section-h">6 · Layout, RTL &amp; accessibility rules</h2>
+  <table class="spec-table">
+    <tr><th style="width:220px">Rule</th><th>Spec</th></tr>
+    <tr><td>Grid &amp; spacing</td><td>4px base; screen padding 15px; card radius 18px, controls 13px; bottom nav 5 tabs</td></tr>
+    <tr><td>RTL</td><td>Arabic is the primary direction — mirrored icons, chevrons point left (‹), progress flows right→left. Foreign-investor module is LTR English; digits always LTR</td></tr>
+    <tr><td>Touch targets</td><td>≥44×44pt; primary CTA full-width and bottom-anchored on flows</td></tr>
+    <tr><td>Contrast</td><td>Text ≥4.5:1; badges pair colour+icon+label; focus rings 2px #2B4FD8</td></tr>
+    <tr><td>Estimates</td><td>Never a bare number: range + confidence + disclaimer wherever an estimate renders (R-E4-2/7). No estimate at LOW confidence with 0 comps — show «بيانات غير كافية لهذا الحي»</td></tr>
+    <tr><td>Photography</td><td>Real listing media only; gradient placeholders in this package stand in for photos/3D tours</td></tr>
+  </table>
+
+</main>
+
+<footer class="site-foot">Fanr Homes design system · brand per Fanr brand book · PRD §8.6</footer>
+</body>
+</html>

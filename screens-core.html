@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fanr Homes — Core &amp; Discovery Screens</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/design.css">
+</head>
+<body class="en">
+
+<header class="site-head" style="padding:26px 22px 24px">
+  <h1 style="font-size:26px;margin-top:0">Core &amp; Discovery — الأساس والبحث</h1>
+  <p>Onboarding, Home, and the map-first search experience (Epics E2 &amp; E10). Arabic-first, RTL.</p>
+</header>
+
+<nav class="site-nav">
+  <a href="index.html">Overview</a>
+  <a href="design-system.html">Design System</a>
+  <a class="on" href="screens-core.html">Core &amp; Discovery</a>
+  <a href="screens-property.html">Property &amp; Legal Rent</a>
+  <a href="screens-owner.html">Owner &amp; Landlord</a>
+  <a href="screens-broker.html">Broker &amp; Developer</a>
+  <a href="screens-invest-data.html">Investor · Data · AI</a>
+</nav>
+
+<main class="wrap">
+<div class="gallery">
+
+<!-- ============ 01 SPLASH ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div style="position:absolute;inset:0;background:linear-gradient(150deg,#1E3FA8 0%,#2B4FD8 55%,#29ABE2 100%)"></div>
+    <div class="statusbar on-grad" style="position:relative"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div style="position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:0 34px;text-align:center">
+      <div style="width:76px;height:76px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px -12px rgba(0,0,0,.4)">
+        <svg width="42" height="42" viewBox="0 0 28 28"><rect x="3" y="7" width="15" height="15" rx="4.5" fill="none" stroke="#29ABE2" stroke-width="3.4"/><rect x="10" y="3" width="15" height="15" rx="4.5" fill="none" stroke="#4DB560" stroke-width="3.4" opacity=".92"/></svg>
+      </div>
+      <div style="font-size:30px;font-weight:900;margin-top:18px">فَنـر <span style="font-weight:500">هومز</span></div>
+      <div style="font-size:11px;letter-spacing:4px;opacity:.75;margin-top:4px">FANR HOMES</div>
+      <div style="font-size:13.5px;line-height:1.8;opacity:.92;margin-top:22px">كل عقار في المملكة له صفحة —<br>بقيمته، وإيجاره النظامي، ومستقبله</div>
+      <div style="display:flex;gap:8px;margin-top:26px">
+        <span class="chip" style="background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff">العربية</span>
+        <span class="chip" style="background:transparent;border-color:rgba(255,255,255,.3);color:#fff">English</span>
+      </div>
+    </div>
+    <div style="position:relative;padding:0 22px 30px">
+      <a class="btn" style="background:#fff;color:var(--navy)">ابدأ الاستكشاف</a>
+      <div style="text-align:center;font-size:10.5px;color:rgba(255,255,255,.8);margin-top:11px">لديك حساب فَنر؟ <b>سجّل الدخول</b></div>
+    </div>
+  </div></div>
+  <div class="note"><b>01 · Splash &amp; language</b>
+    <p>Brand moment stating the value proposition. Language choice up-front; Arabic default, English available (foreign investors deep-link straight into the EN module).</p>
+    <div class="refs"><span>§5.1 Vision</span><span>§8.5 Languages</span></div>
+  </div>
+</div>
+
+<!-- ============ 02 SIGN IN ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="statusbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div class="body pad">
+      <div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:8px">تسجيل الدخول</div>
+      <div style="font-size:11.5px;color:var(--ink-2);margin-top:4px">حساب فَنر واحد — للعقارات، والتكاليف، والمزودين</div>
+      <div class="card" style="margin-top:16px"><div class="cpad" style="text-align:center">
+        <div style="width:54px;height:54px;border-radius:16px;background:#0C5548;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:4px auto 10px">☝</div>
+        <div class="ct">الدخول عبر نفاذ</div>
+        <div class="cs" style="margin-top:3px;line-height:1.7">النفاذ الوطني الموحّد — مطلوب للمُلّاك والمستأجرين<br>وكل أطراف عملية الإيجار</div>
+        <div style="font-size:30px;font-weight:900;color:#0C5548;background:#EAF5F2;border-radius:13px;padding:10px;width:104px;margin:13px auto 0">44</div>
+        <a class="btn" style="margin-top:14px;background:#0C5548">تحقّق في تطبيق نفاذ</a>
+      </div></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:16px 0"><span class="hr" style="flex:1;margin:0"></span><span style="font-size:10px;color:var(--ink-3)">أو</span><span class="hr" style="flex:1;margin:0"></span></div>
+      <div class="field"><label>رقم الجوال — للتصفّح فقط</label><div class="in" dir="ltr">+966 5x xxx xxxx</div></div>
+      <a class="btn ghost">أرسل رمز التحقق</a>
+      <div class="disc" style="margin-top:14px">التصفح متاح للجميع — نفاذ يُطلب عند المطالبة بعقار، أو الإعلان، أو بدء عملية إيجار (R3.2.4)</div>
+    </div>
+  </div></div>
+  <div class="note"><b>02 · Sign in — Nafath first</b>
+    <p>Nafath is the identity rail for owners/tenants; phone OTP allows browse-only accounts. Verification is deferred until an action legally requires it.</p>
+    <div class="refs"><span>R3.2.4</span><span>E13 Identity</span></div>
+  </div>
+</div>
+
+<!-- ============ 03 INTENT ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="statusbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div class="body pad">
+      <div style="font-size:21px;font-weight:900;color:var(--navy);margin-top:8px">وش تبي تسوي؟</div>
+      <div style="font-size:11.5px;color:var(--ink-2);margin-top:4px">نجهّز لك التجربة المناسبة — تقدر تغيّر لاحقاً</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+        <div class="card" style="border:1.6px solid var(--primary);background:var(--selected)"><div class="cpad" style="text-align:center;padding:16px 10px">
+          <div style="font-size:26px">🔑</div><div class="ct" style="margin-top:6px">أبحث عن إيجار</div><div class="cs">شقق وفلل للإيجار</div></div></div>
+        <div class="card"><div class="cpad" style="text-align:center;padding:16px 10px">
+          <div style="font-size:26px">🏠</div><div class="ct" style="margin-top:6px">أبغى أشتري</div><div class="cs">تملّك سكني</div></div></div>
+        <div class="card"><div class="cpad" style="text-align:center;padding:16px 10px">
+          <div style="font-size:26px">📋</div><div class="ct" style="margin-top:6px">أعلن عقاري</div><div class="cs">مالك أو وسيط فال</div></div></div>
+        <div class="card"><div class="cpad" style="text-align:center;padding:16px 10px">
+          <div style="font-size:26px">📈</div><div class="ct" style="margin-top:6px">أستثمر</div><div class="cs">عوائد ومؤشرات</div></div></div>
+      </div>
+      <div class="card" style="margin-top:10px"><div class="cpad" style="display:flex;align-items:center;gap:10px">
+        <div class="ic-tile">🌍</div>
+        <div style="flex:1"><div class="ct">Foreign investor?</div><div class="cs">English-first experience, eligibility zones &amp; costs</div></div>
+        <span style="color:var(--ink-3)">‹</span>
+      </div></div>
+      <div style="margin-top:auto"></div>
+    </div>
+    <div style="padding:0 15px 24px"><a class="btn">متابعة</a></div>
+  </div></div>
+  <div class="note"><b>03 · Intent picker</b>
+    <p>Routes the seven personas: renter, buyer, owner/broker listing path, investor — plus the English-first foreign-investor entry (persona P6).</p>
+    <div class="refs"><span>§5.4 Personas</span><span>R-E9-1</span></div>
+  </div>
+</div>
+
+<!-- ============ 04 HOME ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="grad-wrap" style="flex:none">
+      <div class="statusbar on-grad"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+      <div style="padding:4px 16px 18px;color:#fff">
+        <div style="display:flex;align-items:center;gap:9px">
+          <div style="flex:1"><div style="font-size:16px;font-weight:800">مساء الخير، عبدالله 👋</div><div style="font-size:10px;opacity:.8">الرياض · حي الملقا</div></div>
+          <div style="position:relative"><span style="font-size:17px">🔔</span><span style="position:absolute;top:-3px;left:-4px;width:8px;height:8px;border-radius:50%;background:var(--gold)"></span></div>
+          <div class="avatar">ع</div>
+        </div>
+        <div class="glassy" style="border-radius:15px;margin-top:13px;padding:11px 13px;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.95)">
+          <span style="font-size:15px">🔍</span>
+          <span style="font-size:11px;color:var(--ink-3);flex:1">حي، مدينة، أو «شقة ٣ غرف تحت ٧٠ ألف»…</span>
+          <span class="badge navy">✦ بحث ذكي</span>
+        </div>
+      </div>
+    </div>
+    <div class="body pad" style="padding-top:12px">
+      <div style="display:flex;gap:8px">
+        <div class="card" style="flex:1"><div style="padding:10px 6px;text-align:center"><div style="font-size:19px">⚖</div><div style="font-size:9.5px;font-weight:800;margin-top:3px">هل إيجاري نظامي؟</div></div></div>
+        <div class="card" style="flex:1"><div style="padding:10px 6px;text-align:center"><div style="font-size:19px">💎</div><div style="font-size:9.5px;font-weight:800;margin-top:3px">قيمة عقارك</div></div></div>
+        <div class="card" style="flex:1"><div style="padding:10px 6px;text-align:center"><div style="font-size:19px">🗺</div><div style="font-size:9.5px;font-weight:800;margin-top:3px">الخريطة</div></div></div>
+      </div>
+
+      <div class="ct" style="margin:14px 0 8px">عقارك المُتابَع</div>
+      <div class="card"><div class="cpad">
+        <div style="display:flex;align-items:center;gap:9px">
+          <div class="photo" style="width:52px;height:52px;border-radius:12px;flex:none"></div>
+          <div style="flex:1"><div style="font-size:11.5px;font-weight:800">فيلا الملقا — مُطالَب بها ✓</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px"><span style="font-size:14px;font-weight:900;color:var(--navy)">2.31 مليون</span><span class="badge ok">▲ ‎+2.4٪ هذا الشهر</span></div></div>
+          <span style="color:var(--ink-3)">‹</span>
+        </div>
+        <div class="bars" style="height:34px;margin-top:10px"><i style="height:40%"></i><i style="height:46%"></i><i style="height:42%"></i><i style="height:52%"></i><i style="height:58%"></i><i style="height:55%"></i><i style="height:62%"></i><i style="height:66%"></i><i style="height:64%"></i><i style="height:72%"></i><i style="height:78%"></i><i class="hi" style="height:84%"></i></div>
+        <div style="font-size:8.5px;color:var(--ink-3);margin-top:4px">تقدير فَنر — آخر 12 شهراً · مؤشر استرشادي وليس تقييماً معتمداً</div>
+      </div></div>
+
+      <div class="ct" style="margin:14px 0 8px">نبض السوق — الرياض</div>
+      <div class="stat2">
+        <div class="st"><b>5,240</b><span>ريال/م² متوسط الشمال</span></div>
+        <div class="st"><b>‎8.2٪</b><span>عائد إجمالي نموذجي</span></div>
+      </div>
+      <div class="card" style="margin-top:10px"><div class="cpad" style="display:flex;align-items:center;gap:10px">
+        <div class="ic-tile grad">🛠</div>
+        <div style="flex:1"><div class="ct">من فَنر: قدّر تكلفة ترميم أو بناء</div><div class="cs">مُقدِّر التكاليف + دليل المزودين</div></div>
+        <span style="color:var(--ink-3)">‹</span>
+      </div></div>
+    </div>
+    <div class="bottomnav">
+      <span class="tab on"><span class="ic">⌂</span>الرئيسية</span>
+      <span class="tab"><span class="ic">🗺</span>الخريطة</span>
+      <span class="tab"><span class="ic">✦</span>مساعد فَنر</span>
+      <span class="tab"><span class="ic">🔑</span>أملاكي</span>
+      <span class="tab"><span class="ic">👤</span>حسابي</span>
+    </div>
+  </div></div>
+  <div class="note"><b>04 · Home — the habit surface</b>
+    <p>Leads with the tracked-property value card (the Zillow habit loop → “Weekly Active Property Watchers” north star), the rent-checker tool, market pulse, and Fanr cross-sell.</p>
+    <div class="refs"><span>§9.1 North star</span><span>E6</span><span>R-E3-4</span></div>
+  </div>
+</div>
+
+<!-- ============ 05 MAP SEARCH ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="mapbg">
+      <span class="b" style="top:9%;right:5%;width:37%;height:22%"></span>
+      <span class="b b2" style="top:43%;left:4%;width:40%;height:26%"></span>
+      <span class="b b3" style="top:12%;left:6%;width:27%;height:19%"></span>
+      <span class="b" style="bottom:9%;right:8%;width:33%;height:18%"></span>
+      <span class="road" style="top:0;bottom:0;right:46%;width:8px"></span>
+      <span class="road" style="left:0;right:0;top:39%;height:8px"></span>
+      <span class="road" style="left:0;right:0;top:72%;height:4px;opacity:.7"></span>
+    </div>
+    <div style="position:absolute;top:9%;right:4%;left:16%;height:52%;border:1.6px dashed rgba(43,79,216,.55);background:rgba(41,171,226,.07);border-radius:18px;z-index:1"></div>
+    <span class="badge info" style="position:absolute;top:11%;right:8%;z-index:2">⚖ نطاق تجميد الإيجارات — الرياض</span>
+    <div class="pin" style="top:34%;right:34%"><span class="pb">62 ألف/سنة</span><span class="tip navy"></span></div>
+    <div class="pin" style="top:27%;right:64%"><span class="pb sky">48 ألف</span><span class="tip skyc"></span></div>
+    <div class="pin" style="top:55%;right:22%"><span class="pb grn">1.43م ★</span><span class="tip grnc"></span></div>
+    <div class="pin" style="top:63%;right:66%"><span class="pb sky">95 ألف</span><span class="tip skyc"></span></div>
+
+    <div class="statusbar" style="position:relative;z-index:6"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div style="position:absolute;top:40px;right:12px;left:12px;z-index:6">
+      <div class="glassy" style="border-radius:20px;padding:8px 13px;display:flex;align-items:center;gap:9px">
+        <span style="font-size:14px">🔍</span><span style="font-size:10.5px;color:var(--ink-2);font-weight:600;flex:1">شمال الرياض · إيجار · شقق وفلل</span><div class="avatar" style="width:26px;height:26px;font-size:10px">ع</div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;overflow:hidden">
+        <span class="chip sel">⚙ الفلاتر</span><span class="chip">إيجار</span><span class="chip">3+ غرف</span><span class="chip">ضمن السقف النظامي ⚖</span>
+      </div>
+    </div>
+    <div style="position:absolute;left:13px;bottom:170px;z-index:6;display:flex;flex-direction:column;gap:8px">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 10px 22px -8px rgba(43,79,216,.7)">✏️</div>
+      <div class="glassy" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px">🗂</div>
+    </div>
+    <div class="glassy" style="position:absolute;right:13px;left:13px;bottom:86px;z-index:6;border-radius:17px;padding:10px 12px;display:flex;align-items:center;gap:10px">
+      <div class="ic-tile navy" style="width:40px;height:40px">☰</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:800">214 عقاراً مطابقاً</div><div style="font-size:9.5px;color:var(--ink-2)">‎186 موثّق الرخصة · 12 فرصة أقل من التقدير</div></div>
+      <span style="color:var(--ink-2)">‹</span>
+    </div>
+    <div class="bottomnav" style="position:absolute;bottom:0;left:0;right:0">
+      <span class="tab"><span class="ic">⌂</span>الرئيسية</span>
+      <span class="tab on"><span class="ic">🗺</span>الخريطة</span>
+      <span class="tab"><span class="ic">✦</span>مساعد فَنر</span>
+      <span class="tab"><span class="ic">🔑</span>أملاكي</span>
+      <span class="tab"><span class="ic">👤</span>حسابي</span>
+    </div>
+  </div></div>
+  <div class="note"><b>05 · Map-first search</b>
+    <p>Default search = map + synced result peek. Freeze-zone overlay, price pins (★ = below-estimate opportunity), draw FAB, overlay layers control, and a «ضمن السقف النظامي» filter no competitor can offer.</p>
+    <div class="refs"><span>R-E2-1</span><span>R-E2-7</span><span>R3.3.5</span></div>
+  </div>
+</div>
+
+<!-- ============ 06 DRAW BOUNDARY ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="mapbg">
+      <span class="b" style="top:9%;right:5%;width:37%;height:22%"></span>
+      <span class="b b2" style="top:43%;left:4%;width:40%;height:26%"></span>
+      <span class="road" style="top:0;bottom:0;right:46%;width:8px"></span>
+      <span class="road" style="left:0;right:0;top:39%;height:8px"></span>
+    </div>
+    <svg style="position:absolute;inset:0;z-index:2" width="100%" height="100%" viewBox="0 0 300 650" preserveAspectRatio="none">
+      <path d="M60 180 C 40 260, 70 380, 150 400 C 230 420, 265 330, 245 240 C 230 170, 130 130, 60 180 Z"
+        fill="rgba(43,79,216,.12)" stroke="#2B4FD8" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <circle cx="60" cy="180" r="5" fill="#2B4FD8"/><circle cx="150" cy="400" r="5" fill="#2B4FD8"/><circle cx="245" cy="240" r="5" fill="#2B4FD8"/>
+    </svg>
+    <div class="pin" style="top:42%;right:40%"><span class="pb">62 ألف</span><span class="tip navy"></span></div>
+    <div class="pin" style="top:50%;right:58%"><span class="pb sky">55 ألف</span><span class="tip skyc"></span></div>
+    <div class="statusbar" style="position:relative;z-index:6"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div class="glassy" style="position:absolute;top:44px;right:13px;left:13px;z-index:6;border-radius:15px;padding:10px 13px;display:flex;align-items:center;gap:9px">
+      <span style="font-size:15px">✏️</span><span style="font-size:11px;font-weight:700;flex:1">ارسم حدود منطقتك على الخريطة</span><span class="badge info">وضع الرسم</span>
+    </div>
+    <div style="position:absolute;right:13px;left:13px;bottom:24px;z-index:6">
+      <div class="glassy" style="border-radius:15px;padding:11px 13px;display:flex;align-items:center;gap:9px;margin-bottom:9px">
+        <span style="font-size:12px;font-weight:800;color:var(--navy);flex:1">47 عقاراً داخل حدودك</span>
+        <span class="badge gold">★ 5 فرص</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <a class="btn" style="flex:1.6">اعرض النتائج</a>
+        <a class="btn ghost" style="flex:1">مسح</a>
+      </div>
+    </div>
+  </div></div>
+  <div class="note"><b>06 · Draw-your-own boundary</b>
+    <p>Freehand polygon search — Zillow's most-copied feature, absent from Saudi incumbents. Polygon posts to the search API as GeoJSON.</p>
+    <div class="refs"><span>R-E2-2</span><span>§8.3 search API</span></div>
+  </div>
+</div>
+
+<!-- ============ 07 FILTERS ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div style="position:absolute;inset:0;background:rgba(19,26,42,.4)"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;top:56px;background:#fff;border-radius:26px 26px 0 0;display:flex;flex-direction:column;z-index:5">
+      <div style="width:40px;height:4px;border-radius:3px;background:var(--line);margin:10px auto 4px"></div>
+      <div style="display:flex;align-items:center;padding:6px 16px 10px;border-bottom:1px solid var(--line)">
+        <span style="font-size:15px;font-weight:900;flex:1">الفلاتر</span>
+        <span style="font-size:11px;font-weight:800;color:var(--primary)">إعادة تعيين</span>
+      </div>
+      <div class="body pad">
+        <div class="field"><label>نوع العملية</label>
+          <div class="seg"><span class="op on">إيجار</span><span class="op">بيع</span><span class="op">مشاريع</span></div></div>
+        <div class="field"><label>نوع العقار</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip sel">شقة</span><span class="chip sel">فيلا</span><span class="chip">دور</span><span class="chip">أرض</span><span class="chip">دوبلكس</span><span class="chip">استراحة</span><span class="chip">تجاري</span></div></div>
+        <div class="field"><label>الإيجار السنوي (ريال)</label>
+          <div style="display:flex;gap:8px"><div class="in" style="flex:1">40,000</div><div class="in" style="flex:1">90,000</div></div>
+          <div style="height:22px;position:relative;margin-top:8px"><div style="position:absolute;top:9px;left:8px;right:8px;height:4px;border-radius:3px;background:var(--line)"></div><div style="position:absolute;top:9px;right:20%;left:35%;height:4px;background:var(--primary);border-radius:3px"></div><span style="position:absolute;top:3px;right:19%;width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid var(--primary)"></span><span style="position:absolute;top:3px;left:34%;width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid var(--primary)"></span></div></div>
+        <div class="field"><label>الغرف والمساحة</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip">2 غرف</span><span class="chip sel">3 غرف</span><span class="chip">4+</span><span class="chip sel">150–300 م²</span></div></div>
+        <div class="field"><label>الالتزام والتوثيق</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip sel">⚖ ضمن السقف النظامي</span><span class="chip sel">✓ إعلان مرخّص فقط</span><span class="chip">من المالك مباشرة</span><span class="chip">جولة 3D</span></div></div>
+        <div class="field"><label>تفاصيل أكثر</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip">مصعد</span><span class="chip">مواقف</span><span class="chip">مؤثثة</span><span class="chip">شارع ‎20م+</span><span class="chip">زاوية</span><span class="chip">واجهة شمالية</span><span class="chip">قريب من المترو</span></div></div>
+      </div>
+      <div style="padding:10px 15px 22px;border-top:1px solid var(--line);display:flex;gap:8px">
+        <a class="btn" style="flex:2">عرض 214 نتيجة</a>
+        <a class="btn soft" style="flex:1">🔔 احفظ البحث</a>
+      </div>
+    </div>
+  </div></div>
+  <div class="note"><b>07 · Filters sheet</b>
+    <p>Full PRD filter set including the Saudi-specific attributes (street width, corner, orientation, majlis) and the two trust filters: licensed-only and within-legal-cap.</p>
+    <div class="refs"><span>R-E2-5</span><span>R-E2-8</span></div>
+  </div>
+</div>
+
+<!-- ============ 08 RESULTS LIST ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="statusbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div style="padding:6px 15px 10px;background:#fff;border-bottom:1px solid var(--line)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:16px">‹</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:900">شمال الرياض — إيجار</div><div style="font-size:9.5px;color:var(--ink-3)">214 عقاراً · 186 موثّق</div></div>
+        <span class="badge navy">↕ الأفضل قيمة</span>
+      </div>
+    </div>
+    <div class="body pad" style="display:flex;flex-direction:column;gap:11px">
+      <div class="card" style="overflow:hidden">
+        <div class="photo" style="height:104px">
+          <span class="badge gold" style="position:absolute;top:8px;right:8px">★ أقل من التقدير بـ 6٪</span>
+          <span class="badge" style="position:absolute;bottom:8px;right:8px;background:rgba(19,26,42,.72);color:#fff">📷 14 · 3D</span>
+        </div>
+        <div class="cpad" style="padding:10px 13px 12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:14.5px;color:var(--navy)">62,000 ريال/سنة</b><span style="font-size:8.5px;color:var(--ink-3)" dir="ltr">FNR-RYD-00042931</span></div>
+          <div style="font-size:11.5px;font-weight:700;margin-top:2px">شقة 3 غرف — حي الملقا</div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:2px">165 م² · دور 2 · مصعد · موقفان</div>
+          <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap"><span class="badge ok">✓ إعلان مرخّص</span><span class="badge info">⚖ ضمن السقف</span><span class="badge navy">وسيط فال</span></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div class="photo g3" style="height:104px">
+          <span class="badge" style="position:absolute;bottom:8px;right:8px;background:rgba(19,26,42,.72);color:#fff">📷 9</span>
+        </div>
+        <div class="cpad" style="padding:10px 13px 12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:14.5px;color:var(--navy)">95,000 ريال/سنة</b><span style="font-size:8.5px;color:var(--ink-3)" dir="ltr">FNR-RYD-00051208</span></div>
+          <div style="font-size:11.5px;font-weight:700;margin-top:2px">فيلا دورين — حي حطين</div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:2px">320 م² · 5 غرف · ملحق · مسبح</div>
+          <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap"><span class="badge ok">✓ إعلان مرخّص</span><span class="badge warn">⚠ أعلى من السقف النظامي</span></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div class="photo g2" style="height:104px">
+          <span class="badge" style="position:absolute;top:8px;right:8px;background:#fff;color:var(--navy)">👤 من المالك</span>
+        </div>
+        <div class="cpad" style="padding:10px 13px 12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:14.5px;color:var(--navy)">48,000 ريال/سنة</b><span style="font-size:8.5px;color:var(--ink-3)" dir="ltr">FNR-RYD-00049177</span></div>
+          <div style="font-size:11.5px;font-weight:700;margin-top:2px">شقة غرفتين — حي النرجس</div>
+          <div style="display:flex;gap:5px;margin-top:8px"><span class="badge ok">✓ مالك موثّق بنفاذ</span><span class="badge info">⚖ ضمن السقف</span></div>
+        </div>
+      </div>
+      <div class="disc">آخر تحديث للنتائج قبل دقيقتين · الإعلانات غير المؤكدة خلال 45 يوماً تُوسم «قد لا يكون متاحاً»</div>
+    </div>
+    <div class="bottomnav">
+      <span class="tab"><span class="ic">⌂</span>الرئيسية</span>
+      <span class="tab on"><span class="ic">🗺</span>الخريطة</span>
+      <span class="tab"><span class="ic">✦</span>مساعد فَنر</span>
+      <span class="tab"><span class="ic">🔑</span>أملاكي</span>
+      <span class="tab"><span class="ic">👤</span>حسابي</span>
+    </div>
+  </div></div>
+  <div class="note"><b>08 · Results list</b>
+    <p>Sorted by “best value vs تقدير فَنر”. Every card carries its compliance state — including the advisory ⚠ above-cap warning and the owner-listing badge. Staleness rule from E1-S4 surfaced in footer.</p>
+    <div class="refs"><span>R-E2-6</span><span>E1-S4</span><span>R3.3.3</span></div>
+  </div>
+</div>
+
+<!-- ============ 09 COMPARE ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="statusbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div style="padding:6px 15px 10px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px">
+      <span style="font-size:16px">‹</span>
+      <div style="flex:1"><div style="font-size:14px;font-weight:900">قارن العقارات</div><div style="font-size:9.5px;color:var(--ink-3)">2 من 4 · شاركها مع شريكك 👥</div></div>
+      <span class="badge info">مشتركة مع نورة</span>
+    </div>
+    <div class="body pad">
+      <div style="display:grid;grid-template-columns:88px 1fr 1fr;gap:7px;font-size:10px">
+        <span></span>
+        <div class="card" style="overflow:hidden"><div class="photo" style="height:56px"></div><div style="padding:6px 8px"><b style="font-size:10px;color:var(--navy)">شقة الملقا</b></div></div>
+        <div class="card" style="overflow:hidden"><div class="photo g3" style="height:56px"></div><div style="padding:6px 8px"><b style="font-size:10px;color:var(--navy)">شقة النرجس</b></div></div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">الإيجار</div>
+        <div class="card" style="padding:7px 8px"><b>62,000</b><div style="color:var(--ink-3);font-size:8.5px">ريال/سنة</div></div>
+        <div class="card" style="padding:7px 8px"><b>48,000</b><div style="color:var(--ink-3);font-size:8.5px">ريال/سنة</div></div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">ريال/م²</div>
+        <div class="card" style="padding:7px 8px"><b>376</b></div>
+        <div class="card" style="padding:7px 8px;border-color:var(--green)"><b style="color:var(--ok)">369 ✓</b></div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">مقابل التقدير</div>
+        <div class="card" style="padding:7px 8px;border-color:var(--green)"><span class="badge gold">★ ‎−6٪</span></div>
+        <div class="card" style="padding:7px 8px"><span class="badge info">مطابق</span></div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">السقف النظامي</div>
+        <div class="card" style="padding:7px 8px"><span class="badge ok">⚖ ضمن السقف</span></div>
+        <div class="card" style="padding:7px 8px"><span class="badge ok">⚖ ضمن السقف</span></div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">العمر · التشطيب</div>
+        <div class="card" style="padding:7px 8px">4 سنوات · فاخر</div>
+        <div class="card" style="padding:7px 8px">جديد · ممتاز</div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">زمن الوصول للعمل</div>
+        <div class="card" style="padding:7px 8px">18 دقيقة 🚗</div>
+        <div class="card" style="padding:7px 8px">27 دقيقة 🚗</div>
+
+        <div style="font-weight:800;color:var(--ink-2);padding:7px 0">ملاحظات نورة</div>
+        <div class="card" style="padding:7px 8px;background:var(--selected)">«المطبخ ممتاز 👌»</div>
+        <div class="card" style="padding:7px 8px;background:var(--selected)">«بعيدة عن المدرسة»</div>
+      </div>
+      <a class="btn" style="margin-top:13px">احجز معاينة للشقتين</a>
+    </div>
+  </div></div>
+  <div class="note"><b>09 · Compare + co-shopping</b>
+    <p>Up to 4 properties side-by-side on price/m², estimate delta, legal cap, commute. Shared shortlist with partner comments — Zillow co-shopping, localised.</p>
+    <div class="refs"><span>E10</span><span>R-E2-4</span></div>
+  </div>
+</div>
+
+<!-- ============ 10 SAVED SEARCHES ============ -->
+<div class="shot">
+  <div class="frame"><div class="app">
+    <div class="statusbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><b style="font-size:9px">5G</b><span class="batt"></span></span></div>
+    <div style="padding:6px 15px 10px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px">
+      <span style="font-size:16px">‹</span>
+      <div style="flex:1"><div style="font-size:14px;font-weight:900">بحوثي المحفوظة</div><div style="font-size:9.5px;color:var(--ink-3)">تنبيهات فورية أو يومية أو أسبوعية</div></div>
+    </div>
+    <div class="body pad" style="display:flex;flex-direction:column;gap:10px">
+      <div class="card"><div class="cpad">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="ic-tile">🔔</div>
+          <div style="flex:1"><div class="ct">شقق 3 غرف — شمال الرياض</div><div class="cs">إيجار ‎40–90 ألف · ضمن السقف النظامي</div></div>
+          <span class="badge info">فوري</span>
+        </div>
+        <div class="hr"></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="badge gold">3 جديدة اليوم</span>
+          <span class="badge ok">▼ انخفاض سعر واحد</span>
+          <span style="font-size:9.5px;color:var(--ink-3);margin-right:auto">واتساب + إشعار</span>
+        </div>
+      </div></div>
+      <div class="card"><div class="cpad">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="ic-tile">✏️</div>
+          <div style="flex:1"><div class="ct">حدودي المرسومة — الياسمين</div><div class="cs">فلل للبيع · ‎1.2–1.8 مليون</div></div>
+          <span class="badge navy">يومي</span>
+        </div>
+      </div></div>
+      <div class="ct" style="margin:6px 0 0">المفضلة</div>
+      <div class="card"><div class="cpad" style="display:flex;gap:9px;align-items:center">
+        <div class="photo" style="width:48px;height:48px;border-radius:11px;flex:none"></div>
+        <div style="flex:1"><div style="font-size:11.5px;font-weight:800">شقة الملقا — 62,000/سنة</div>
+        <div style="font-size:9.5px;color:var(--ink-3);margin-top:1px">📝 «نسأل عن الصيانة» · 📷 ملاحظة مصوّرة</div></div>
+        <span style="color:var(--gold);font-size:15px">♥</span>
+      </div></div>
+      <div class="card"><div class="cpad" style="display:flex;gap:9px;align-items:center">
+        <div class="photo g3" style="width:48px;height:48px;border-radius:11px;flex:none"></div>
+        <div style="flex:1"><div style="font-size:11.5px;font-weight:800">فيلا حطين — 95,000/سنة</div>
+        <div style="font-size:9.5px;color:var(--ink-3);margin-top:1px"><span class="badge warn" style="font-size:8px">⚠ تغيّر السعر ▲</span></div></div>
+        <span style="color:var(--gold);font-size:15px">♥</span>
+      </div></div>
+    </div>
+    <div class="bottomnav">
+      <span class="tab"><span class="ic">⌂</span>الرئيسية</span>
+      <span class="tab on"><span class="ic">🗺</span>الخريطة</span>
+      <span class="tab"><span class="ic">✦</span>مساعد فَنر</span>
+      <span class="tab"><span class="ic">🔑</span>أملاكي</span>
+      <span class="tab"><span class="ic">👤</span>حسابي</span>
+    </div>
+  </div></div>
+  <div class="note"><b>10 · Saved searches, alerts &amp; favourites</b>
+    <p>Alert cadence control (instant/daily/weekly) via push + WhatsApp; favourites with private notes and photo annotations; price-drop and status-change notifications.</p>
+    <div class="refs"><span>R-E2-8</span><span>E10</span></div>
+  </div>
+</div>
+
+</div>
+</main>
+
+<footer class="site-foot">Fanr Homes — Core &amp; Discovery screens · Epics E2, E10</footer>
+</body>
+</html>

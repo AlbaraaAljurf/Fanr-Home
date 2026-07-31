@@ -1,0 +1,45 @@
+{
+  "_comment": "market_reference config table (remediation Phase 5.5). Every entry carries source and as_of_date; values are edited here (admin UI in production), NEVER in code. Consumers must treat a missing key as 'unavailable', not default it.",
+  "entries": [
+    {
+      "key": "rett_pct",
+      "label_ar": "ضريبة التصرفات العقارية",
+      "value": 5,
+      "unit": "%",
+      "source": "ZATCA — Real Estate Transaction Tax regulation",
+      "as_of_date": "2026-07-01"
+    },
+    {
+      "key": "vat_pct",
+      "label_ar": "ضريبة القيمة المضافة على الخدمات",
+      "value": 15,
+      "unit": "%",
+      "source": "ZATCA — VAT law",
+      "as_of_date": "2026-07-01"
+    },
+    {
+      "key": "ksa_avg_gross_yield_pct",
+      "label_ar": "متوسط العائد الإجمالي — المملكة",
+      "value": 6.84,
+      "unit": "%",
+      "source": "PRD v1.0 Appendix A (market reference), Q1 2026",
+      "as_of_date": "2026-03-31"
+    },
+    {
+      "key": "riyadh_gross_yield_typical_pct_range",
+      "label_ar": "العائد الإجمالي النموذجي — الرياض",
+      "value": "8–9",
+      "unit": "%",
+      "source": "PRD v1.0 Appendix A (market reference)",
+      "as_of_date": "2026-06-30"
+    },
+    {
+      "key": "yield_guardrail_band_pct",
+      "label_ar": "نطاق حارس العائد الضمني",
+      "value": "3–10",
+      "unit": "%",
+      "source": "PRD v1.0 §7.2 sanity guardrails",
+      "as_of_date": "2026-07-01"
+    }
+  ]
+}

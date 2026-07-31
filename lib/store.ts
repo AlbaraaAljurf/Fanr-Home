@@ -9,7 +9,7 @@ import { buildSeed } from "./seed";
  * app only talks to the functions exported here.
  */
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = process.env.FANR_DATA_DIR || path.join(process.cwd(), "data");
 const DB_FILE = path.join(DATA_DIR, "db.json");
 
 declare global {

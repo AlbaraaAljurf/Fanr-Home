@@ -3,6 +3,7 @@ import { sweepExpiredLicenses } from "@/lib/compliance";
 import { estimateFromRows, legalRentFor } from "@/lib/avm";
 import { computeBaseline } from "@/lib/baselines";
 import { sar } from "@/lib/format";
+import { marketReference } from "@/lib/marketref";
 import { ScreenHeader } from "@/components/Shell";
 import AdminActions from "@/components/AdminActions";
 
@@ -106,8 +107,25 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
+        <div className="ct" style={{ margin: "18px 0 10px" }}>market_reference — قيم مرجعية بمصدر وتاريخ</div>
+        <div className="tbl-wrap card">
+          <table className="tbl">
+            <thead><tr><th>البند</th><th>القيمة</th><th>المصدر</th><th>حتى تاريخ</th></tr></thead>
+            <tbody>
+              {marketReference().map((e) => (
+                <tr key={e.key}>
+                  <td style={{ fontWeight: 700 }}>{e.label_ar}</td>
+                  <td>{e.value}{e.unit}</td>
+                  <td style={{ fontSize: 11 }}>{e.source}</td>
+                  <td style={{ direction: "ltr", textAlign: "end" }}>{e.as_of_date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         <p className="disc" style={{ marginTop: 10 }}>
-          الإدخال عبر <span style={{ direction: "ltr", display: "inline-block" }}>scripts/ingest-moj.mjs</span> —
+          الإدخال عبر <span style={{ direction: "ltr", display: "inline-block" }}>scripts/ingest-moj.ts</span> —
           كل صف بمصدر ومرجع وتاريخ، والإدخال قابل لإعادة التشغيل دون تكرار ·
           نطاق التجميد: riyadh-urban-v1-mvp (يُستبدل بمضلع الأمانة الرسمي)
         </p>

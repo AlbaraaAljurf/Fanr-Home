@@ -17,6 +17,20 @@ npm run dev        # → http://localhost:3000
 No database or keys required — the MVP seeds itself (`data/db.json`) on first run.
 The map loads live OSM tiles directly in your browser.
 
+## Deploy it (phone-friendly — no PC needed)
+
+The app needs no database, env vars, or build config, so any Next.js host runs it as-is:
+
+1. Open **[vercel.com/new](https://vercel.com/new)** and sign in with your GitHub account.
+2. **Import** the `Fanr-Home` repository (install the Vercel GitHub app on it when prompted).
+3. Leave every setting at its default and tap **Deploy** — you get a public URL like
+   `fanr-home.vercel.app` in about a minute, with the real interactive map working on mobile.
+
+Note for the demo deployment: the serverless filesystem is ephemeral, so listings/leads you
+create live in the instance's memory and may reset between visits — the production answer is
+the PostgreSQL + PostGIS swap described below. Everything else (map, draw-boundary, estimates,
+checker, compliance gate) behaves fully.
+
 ## What's implemented (PRD Phase-1 scope)
 
 | Surface | Route | PRD |

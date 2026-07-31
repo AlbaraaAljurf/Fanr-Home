@@ -67,6 +67,22 @@ export async function POST(req: Request) {
     );
   }
 
+  // Duplicate detection (E1-S5): same district + class, price ±5%, area ±10%.
+  // Production adds perceptual image hashing; canonical selection by trust score.
+  const areaM2 = Number(b.areaM2) || 100;
+  const dup = db.listings.find(
+    (x) =>
+      x.status === "live" &&
+      x.districtId === d.id &&
+      x.propertyType === (b.propertyType ?? "apartment") &&
+      x.listingType === "rent" &&
+      Math.abs(x.price - price) / Math.max(x.price, 1) <= 0.05 &&
+      Math.abs(x.areaM2 - areaM2) / Math.max(x.areaM2, 1) <= 0.1
+  );
+  if (dup) {
+    complianceLog.push(`possible duplicate of ${dup.ref} (district+price+area match) — flagged for review`);
+  }
+
   const n = 60000 + db.listings.length * 13;
   const jitter = (db.listings.length % 7) * 0.002 - 0.006;
   const listing: Listing = {
@@ -81,7 +97,7 @@ export async function POST(req: Request) {
     lng: d.center[0] + jitter,
     lat: d.center[1] + jitter / 2,
     locationPrecision: "approximate",
-    areaM2: Number(b.areaM2) || 100,
+    areaM2,
     bedrooms: Number(b.bedrooms) || 0,
     bathrooms: Number(b.bathrooms) || 0,
     ageYears: Number(b.ageYears) || 0,
@@ -106,6 +122,8 @@ export async function POST(req: Request) {
     advertiserPhone: "+966 55 000 1122",
     falNumber: b.advertiserType === "owner_self_listing" ? null : b.falNumber || "1100254",
     complianceLog,
+    lastConfirmedAt: new Date().toISOString(),
+    duplicateOfId: dup ? dup.id : null,
     photoSeed: db.listings.length,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

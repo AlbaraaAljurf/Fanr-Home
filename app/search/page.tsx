@@ -27,6 +27,8 @@ export default function SearchPage() {
         verdict: lr.verdict,
         advertiserType: l.advertiserType,
         photoSeed: l.photoSeed,
+        stale:
+          (Date.now() - new Date(l.lastConfirmedAt ?? l.createdAt).getTime()) / 86400000 > 45,
       };
     });
 

@@ -13,6 +13,7 @@ export default function AdminPage() {
 
   const flagged = db.listings.filter((l) => {
     if (l.status !== "live") return false;
+    if (l.duplicateOfId) return true; // E1-S5
     const d = db.districts.find((x) => x.id === l.districtId)!;
     if (l.listingType === "rent") {
       const lr = legalRentFor(l, d);
@@ -69,7 +70,8 @@ export default function AdminPage() {
                   <td style={{ whiteSpace: "nowrap" }}>{sar(l.price)}</td>
                   <td>
                     {lr?.verdict === "above_cap" && <span className="badge warn">أعلى من السقف النظامي</span>}{" "}
-                    {est && l.price < est.value * 0.6 && <span className="badge danger">سعر شاذ — نمط طُعم</span>}
+                    {est && l.price < est.value * 0.6 && <span className="badge danger">سعر شاذ — نمط طُعم</span>}{" "}
+                    {l.duplicateOfId && <span className="badge danger">مكرر محتمل — {db.listings.find((x) => x.id === l.duplicateOfId)?.ref ?? l.duplicateOfId}</span>}
                   </td>
                   <td>{l.reports.length > 0 ? <span className="badge danger">{l.reports.length} بلاغ</span> : "—"}</td>
                   <td><AdminActions listingId={l.id} /></td>

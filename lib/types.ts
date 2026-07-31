@@ -62,6 +62,10 @@ export interface Listing {
   advertiserPhone: string;
   falNumber: string | null;
   complianceLog: string[];
+  /** E7.2/E1-S4: broker re-confirms availability every 30 days; >45 days flags publicly */
+  lastConfirmedAt?: string;
+  /** E1-S5: set when publish-time duplicate detection matches an existing live listing */
+  duplicateOfId?: string | null;
   photoSeed: number;
   createdAt: string;
   updatedAt: string;
@@ -76,6 +80,9 @@ export interface Lead {
   phone: string;
   interest: "viewing" | "inquiry" | "negotiation";
   createdAt: string;
+  /** SLA loop (R-E7-4): response timing feeds the earned response-rate badge */
+  status?: "new" | "responded" | "qualified" | "closed";
+  respondedAt?: string | null;
 }
 
 export interface Report {

@@ -18,6 +18,8 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       | "inquiry"
       | "negotiation",
     createdAt: new Date().toISOString(),
+    status: "new" as const,
+    respondedAt: null,
   };
   updateListing(l.id, { leads: [...l.leads, lead] });
 

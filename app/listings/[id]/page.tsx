@@ -64,6 +64,15 @@ export default function ListingPage({ params }: { params: { id: string } }) {
             </div>
           </div>
 
+          {(Date.now() - new Date(l.lastConfirmedAt ?? l.createdAt).getTime()) / 86400000 > 45 && (
+            <div style={{ display: "flex", gap: 8, background: "var(--warn-bg)", border: "1.4px solid var(--warn-line)", borderRadius: 12, padding: "10px 13px", marginTop: 12 }}>
+              <span>⏳</span>
+              <span style={{ fontSize: 13, color: "var(--warn)", fontWeight: 700 }}>
+                لم يؤكد المُعلن توفر هذا العقار منذ أكثر من 45 يوماً — قد لا يكون متاحاً. اطلب تأكيداً قبل المعاينة.
+              </span>
+            </div>
+          )}
+
           <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
             {[
               [TYPE_LABELS[l.propertyType], "النوع"],

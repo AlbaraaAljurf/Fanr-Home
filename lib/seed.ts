@@ -67,6 +67,8 @@ interface SeedSpec {
   dLng: number;
   dLat: number;
   licenseExpiredDays?: number; // negative = already expired
+  /** days since the broker last confirmed availability (E7.2/E1-S4 demo states) */
+  staleDays?: number;
 }
 
 const SPECS: SeedSpec[] = [
@@ -74,14 +76,14 @@ const SPECS: SeedSpec[] = [
   { district: "al-malqa", type: "villa", listingType: "rent", title: "فيلا دورين وملحق — الملقا", area: 380, beds: 5, baths: 6, age: 6, finish: "premium", floor: null, elevator: false, parking: 2, street: 15, corner: true, orientation: "east", price: 145000, freeze: "never_leased", dLng: -0.006, dLat: 0.005 },
   { district: "al-malqa", type: "apartment", listingType: "rent", title: "شقة غرفتين — الملقا", area: 120, beds: 2, baths: 2, age: 2, finish: "standard", floor: 1, elevator: true, parking: 1, street: 15, corner: false, orientation: "west", price: 52000, freeze: "currently_leased", lastEjar: 48000, dLng: 0.008, dLat: -0.004 },
   { district: "hittin", type: "villa", listingType: "rent", title: "فيلا مودرن مع مسبح — حطين", area: 320, beds: 5, baths: 5, age: 3, finish: "luxury", floor: null, elevator: false, parking: 2, street: 20, corner: false, orientation: "north", price: 105000, freeze: "previously_leased_vacant", lastEjar: 95000, dLng: 0.003, dLat: -0.003 },
-  { district: "hittin", type: "apartment", listingType: "rent", title: "شقة فاخرة 3 غرف — حطين", area: 175, beds: 3, baths: 3, age: 1, finish: "luxury", floor: 4, elevator: true, parking: 2, street: 25, corner: false, orientation: "north", price: 78000, freeze: "never_leased", dLng: -0.005, dLat: 0.004 },
+  { district: "hittin", type: "apartment", listingType: "rent", title: "شقة فاخرة 3 غرف — حطين", area: 175, beds: 3, baths: 3, age: 1, finish: "luxury", floor: 4, elevator: true, parking: 2, street: 25, corner: false, orientation: "north", price: 78000, freeze: "never_leased", dLng: -0.005, dLat: 0.004, staleDays: 51 },
   { district: "al-narjis", type: "apartment", listingType: "rent", title: "شقة غرفتين — النرجس، من المالك", area: 130, beds: 2, baths: 2, age: 0, finish: "standard", floor: 3, elevator: true, parking: 1, street: 15, corner: false, orientation: "east", price: 48000, freeze: "never_leased", advertiser: "owner", dLng: 0.005, dLat: 0.002 },
   { district: "al-narjis", type: "duplex", listingType: "rent", title: "دوبلكس 4 غرف — النرجس", area: 240, beds: 4, baths: 4, age: 2, finish: "premium", floor: null, elevator: false, parking: 2, street: 20, corner: true, orientation: "north", price: 85000, freeze: "previously_leased_vacant", lastEjar: 80000, dLng: -0.007, dLat: -0.005 },
   { district: "al-yasmin", type: "apartment", listingType: "rent", title: "شقة 3 غرف — الياسمين", area: 150, beds: 3, baths: 2, age: 5, finish: "standard", floor: 2, elevator: true, parking: 1, street: 15, corner: false, orientation: "south", price: 55000, freeze: "currently_leased", lastEjar: 55000, dLng: 0.004, dLat: 0.004 },
   { district: "al-yasmin", type: "floor", listingType: "rent", title: "دور علوي مستقل — الياسمين", area: 200, beds: 4, baths: 3, age: 8, finish: "standard", floor: 1, elevator: false, parking: 1, street: 15, corner: false, orientation: "west", price: 65000, freeze: "previously_leased_vacant", lastEjar: 58000, dLng: -0.006, dLat: 0.002 },
   { district: "al-sahafah", type: "apartment", listingType: "rent", title: "شقة غرفتين مؤثثة — الصحافة", area: 115, beds: 2, baths: 2, age: 3, finish: "premium", floor: 5, elevator: true, parking: 1, street: 20, corner: false, orientation: "north", price: 58000, freeze: "never_leased", dLng: 0.003, dLat: -0.004 },
   { district: "qurtubah", type: "apartment", listingType: "rent", title: "شقة 3 غرف — قرطبة", area: 155, beds: 3, baths: 2, age: 7, finish: "economy", floor: 1, elevator: false, parking: 1, street: 12, corner: false, orientation: "east", price: 44000, freeze: "previously_leased_vacant", lastEjar: 44000, advertiser: "owner", dLng: 0.005, dLat: 0.003 },
-  { district: "qurtubah", type: "villa", listingType: "rent", title: "فيلا عائلية — قرطبة", area: 350, beds: 6, baths: 5, age: 10, finish: "standard", floor: null, elevator: false, parking: 2, street: 15, corner: false, orientation: "south", price: 90000, freeze: "currently_leased", lastEjar: 90000, dLng: -0.004, dLat: -0.004 },
+  { district: "qurtubah", type: "villa", listingType: "rent", title: "فيلا عائلية — قرطبة", area: 350, beds: 6, baths: 5, age: 10, finish: "standard", floor: null, elevator: false, parking: 2, street: 15, corner: false, orientation: "south", price: 90000, freeze: "currently_leased", lastEjar: 90000, dLng: -0.004, dLat: -0.004, staleDays: 34 },
   { district: "al-arid", type: "apartment", listingType: "rent", title: "شقة جديدة غرفتين — العارض", area: 125, beds: 2, baths: 2, age: 0, finish: "standard", floor: 2, elevator: true, parking: 1, street: 20, corner: false, orientation: "north", price: 42000, freeze: "never_leased", dLng: 0.004, dLat: 0.002 },
   { district: "al-rabi", type: "apartment", listingType: "rent", title: "شقة 3 غرف — الربيع", area: 160, beds: 3, baths: 2, age: 4, finish: "standard", floor: 3, elevator: true, parking: 1, street: 15, corner: false, orientation: "east", price: 57000, freeze: "previously_leased_vacant", lastEjar: 51000, dLng: -0.005, dLat: 0.003 },
   { district: "al-olaya", type: "apartment", listingType: "rent", title: "شقة تنفيذية — العليا", area: 140, beds: 2, baths: 2, age: 12, finish: "premium", floor: 8, elevator: true, parking: 1, street: 30, corner: false, orientation: "north", price: 68000, freeze: "currently_leased", lastEjar: 65000, dLng: 0.003, dLat: 0.004 },
@@ -141,6 +143,8 @@ export function buildSeed(): Db {
       advertiserPhone: "+966 55 000 1122",
       falNumber: s.advertiser === "owner" ? null : "1100254",
       complianceLog: [],
+      lastConfirmedAt: iso(-(s.staleDays ?? i % 5)),
+      duplicateOfId: null,
       photoSeed: i,
       createdAt: iso(-(3 + i)),
       updatedAt: iso(-(i % 5)),
@@ -149,6 +153,14 @@ export function buildSeed(): Db {
       reports: [],
     };
   });
+
+  // Seeded leads on the first broker listing — feeds the SLA metrics demo
+  const hours = (h: number) => new Date(Date.now() - h * 3600000).toISOString();
+  listings[0].leads = [
+    { id: "ld-seed1", name: "محمد العتيبي", phone: "+966 55 111 2233", interest: "viewing", createdAt: hours(26), status: "qualified", respondedAt: hours(24.5) },
+    { id: "ld-seed2", name: "سارة القحطاني", phone: "+966 55 444 5566", interest: "inquiry", createdAt: hours(5), status: "responded", respondedAt: hours(3.8) },
+    { id: "ld-seed3", name: "خالد — مستثمر", phone: "+966 55 777 8899", interest: "negotiation", createdAt: hours(9), status: "new", respondedAt: null },
+  ];
 
   return {
     districts: DISTRICTS,

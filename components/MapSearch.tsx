@@ -23,6 +23,7 @@ export interface MapListing {
   verdict: "within_cap" | "above_cap" | "no_cap" | "unknown_cap" | null;
   advertiserType: string;
   photoSeed: number;
+  stale?: boolean;
 }
 
 interface Props {
@@ -375,6 +376,7 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
                   {l.verdict === "within_cap" && <span className="badge info">⚖ ضمن السقف</span>}
                   {l.verdict === "above_cap" && <span className="badge warn">⚠ أعلى من السقف</span>}
                   {l.advertiserType === "owner_self_listing" && <span className="badge navy">👤 مالك</span>}
+                  {l.stale && <span className="badge warn">قد لا يكون متاحاً</span>}
                 </div>
               </div>
             </div>

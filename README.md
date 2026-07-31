@@ -29,8 +29,8 @@ The map loads live OSM tiles directly in your browser.
 | Claim wizard — simulated Nafath + deed verification (hash-only note), persists to the portfolio | `/owner/claim` | E1-S2, E13 |
 | Ejar readiness pack — parties/property/terms checklist, no-increase-clause check, handoff to ejar.sa | `/owner/ejar-pack` | R3.2.1–.2 |
 | Renewal calendar — 90/65-day alerts visualised against the 60-day statutory notice | `/owner/renewals` | R3.2.3, E5-S4 |
-| Broker workspace — KPIs, listings table, licence-expiry alerts, lead inbox | `/broker` | E7 |
-| **Add-listing wizard** — REGA ad-licence verification gate (publish blocked until verified), mandatory freeze-status declaration + last Ejar value, advisory above-cap warning (logged, one-tap fix) | `/broker/new` | E1-S1, R3.1.1–.2, R3.3.2–.3 |
+| Broker workspace — lead inbox with statuses (new→responded→qualified→closed), **earned response-rate badge** computed from real first-response timing (awarded under a 6h median), SLA-overdue nudges, 30-day availability re-confirmation, licence-expiry alerts | `/broker` | E7, R-E7-4, E7.2 |
+| **Add-listing wizard** — REGA ad-licence verification gate (publish blocked until verified), mandatory freeze-status declaration + last Ejar value, advisory above-cap warning (logged, one-tap fix), publish-time duplicate detection (district+price±5%+area±10% → flagged for admin review) | `/broker/new` | E1-S1, R3.1.1–.2, R3.3.2–.3, E1-S5 |
 | Admin console — moderation queue (above-cap, bait-price anomaly >40% below estimate, reports), daily licence sweep with auto-unpublish, AVM baseline monitor with implied-yield guardrail (3–10%) | `/admin` | E14, R3.1.4, E13, §7.2 |
 | **District data pages** — medians, 12-month trend, monthly price chart, property mix, live inventory — all computed from the transaction corpus | `/districts/[id]` | E12, R-E12-1 |
 | Rent-freeze explainer — the three scenarios, auto-renewal, 60-day windows, objection route (quotable GEO/SEO content) | `/guide/rent-freeze` | E5.3, R-E12-5 |

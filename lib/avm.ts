@@ -327,13 +327,15 @@ export function estimateFromRows(
   }
   const hedonicEstimate = baseline.medianM2 * s.areaM2 * (s.propertyType === "land" ? 1 : cappedMultiplier);
 
-  const comps = s.propertyType === "land" ? [] : selectComparables(transactions, s, d, kind, set, 0);
-  const w2 = w2For(comps.length);
-  const compEstimate = w2 > 0 ? weightedMedian(comps.map((c) => ({ v: c.adjusted, w: c.weight }))) : null;
-  const confidence = confidenceFor(comps.length);
+  const eligibleComps = s.propertyType === "land" ? [] : selectComparables(transactions, s, d, kind, set, 0);
+  const w2 = w2For(eligibleComps.length);
+  const compEstimate = w2 > 0 ? weightedMedian(eligibleComps.map((c) => ({ v: c.adjusted, w: c.weight }))) : null;
+  const confidence = confidenceFor(eligibleComps.length);
+  // comps < 3 ⇒ weight 0 AND the table must not render (§3.4): expose zero rows
+  const comps = w2 > 0 ? eligibleComps : [];
 
   // Never publish LOW confidence with zero comparables (§3.4)
-  if (confidence === "low" && comps.length === 0) {
+  if (confidence === "low" && eligibleComps.length === 0) {
     return {
       available: false,
       reason: "insufficient_confidence",

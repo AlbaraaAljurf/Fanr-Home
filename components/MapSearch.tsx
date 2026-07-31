@@ -6,6 +6,7 @@ import maplibregl, { Map as MLMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { pointInPolygon, Ring } from "@/lib/geo";
 import { sarShort, TYPE_LABELS } from "@/lib/format";
+import { addSavedSearch } from "@/lib/clientStore";
 
 export interface MapListing {
   id: string;
@@ -59,6 +60,7 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
   const [showFreeze, setShowFreeze] = useState(true);
   const [drawing, setDrawing] = useState(false);
   const [polygon, setPolygon] = useState<Ring | null>(null);
+  const [justSaved, setJustSaved] = useState(false);
   const drawPts = useRef<Ring>([]);
 
   const filtered = useMemo(
@@ -274,6 +276,27 @@ export default function MapSearch({ listings, freezeRing, freezeVersion, distric
           ) : (
             <span className="chip glassy sel" onClick={clearPolygon}>✕ مسح الحدود المرسومة</span>
           )}
+          <span
+            className="chip glassy"
+            onClick={() => {
+              const parts = [
+                type === "rent" ? "إيجار" : "بيع",
+                minBeds ? `${minBeds}+ غرف` : null,
+                maxPrice ? `تحت ${sarShort(maxPrice)}` : null,
+                capOnly ? "ضمن السقف" : null,
+                polygon ? "حدود مرسومة" : "الرياض",
+              ].filter(Boolean);
+              addSavedSearch({
+                name: parts.join(" · "),
+                filters: { type, minBeds, maxPrice, capOnly, polygon },
+                lastSeenCount: filtered.length,
+              });
+              setJustSaved(true);
+              setTimeout(() => setJustSaved(false), 2000);
+            }}
+          >
+            {justSaved ? "✓ حُفظ البحث" : "🔔 احفظ البحث"}
+          </span>
         </div>
         <div
           className="glassy"

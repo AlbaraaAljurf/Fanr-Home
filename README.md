@@ -28,7 +28,11 @@ The map loads live OSM tiles directly in your browser.
 | Owner dashboard — claimed property with tracked estimate, owner listing path | `/owner` | E6 |
 | Broker workspace — KPIs, listings table, licence-expiry alerts, lead inbox | `/broker` | E7 |
 | **Add-listing wizard** — REGA ad-licence verification gate (publish blocked until verified), mandatory freeze-status declaration + last Ejar value, advisory above-cap warning (logged, one-tap fix) | `/broker/new` | E1-S1, R3.1.1–.2, R3.3.2–.3 |
-| Admin console — moderation queue (above-cap, bait-price anomaly >40% below estimate, reports), daily licence sweep with auto-unpublish, AVM baseline monitor | `/admin` | E14, R3.1.4, E13 |
+| Admin console — moderation queue (above-cap, bait-price anomaly >40% below estimate, reports), daily licence sweep with auto-unpublish, AVM baseline monitor with implied-yield guardrail (3–10%) | `/admin` | E14, R3.1.4, E13, §7.2 |
+| **District data pages** — medians, 12-month trend, monthly price chart, property mix, live inventory — all computed from the transaction corpus | `/districts/[id]` | E12, R-E12-1 |
+| Rent-freeze explainer — the three scenarios, auto-renewal, 60-day windows, objection route (quotable GEO/SEO content) | `/guide/rent-freeze` | E5.3, R-E12-5 |
+| Saved searches (with new-match counts) + favourites | `/saved` | E10, R-E2-8 |
+| Compare view — up to 4 favourites on price/m², estimate delta, legal cap | `/compare` | E10 |
 
 ### API (PRD §8.3 envelope: `{success, data, meta, error}`)
 
@@ -49,11 +53,20 @@ POST /api/v1/admin/listings/:id                  # moderation actions
 app/            Next.js App Router — SSR pages + /api/v1 route handlers
 components/     MapSearch (MapLibre client), LeadPanel, AdminActions
 lib/
-  avm.ts        تقدير فَنر Layers 1–2: district baselines × versioned hedonic factor set
-  geo.ts        point-in-polygon, freeze-zone polygon (versioned: riyadh-urban-v1-mvp)
-  compliance.ts ad-licence/FAL verification stubs + daily expiry sweep
-  seed.ts       10 Riyadh districts (real coords) + 20 listings
-  store.ts      file-backed store (data/db.json)
+  avm.ts          تقدير فَنر — full three-layer hybrid (PRD Part VII):
+                  L1 district baselines × L2 hedonic factors (lib/factors.ts, versioned)
+                  × L3 comparable reconciliation: area ±25%, trailing 9 months, 12 nearest,
+                  weighted median (6-month recency half-life × inverse distance × attribute
+                  similarity), w2 by comp count (≥8→0.70, 5–7→0.55, 3–4→0.40, <3→0),
+                  confidence & range from comp dispersion, yield guardrail 3–10%
+  transactions.ts synthetic MOJ/SREM-style transaction corpus (deterministic PRNG) —
+                  stands in for fanr-ingestion-worker
+  marketstats.ts  district analytics (medians, trend, mix, monthly series) from the corpus
+  geo.ts          point-in-polygon, freeze-zone polygon (versioned: riyadh-urban-v1-mvp)
+  compliance.ts   ad-licence/FAL verification stubs + daily expiry sweep
+  seed.ts         10 Riyadh districts (real coords) + 20 listings
+  store.ts        file-backed store (data/db.json)
+  clientStore.ts  saved searches + favourites (localStorage)
 ```
 
 Deliberate MVP substitutions, each isolated behind the module boundary the PRD names:
@@ -62,8 +75,8 @@ Deliberate MVP substitutions, each isolated behind the module boundary the PRD n
 - **Licence verification**: deterministic format-validation stubs ⇒ REGA/FAL APIs (`lib/compliance.ts`).
 - **Identity**: Nafath deferred — flows marked at their integration points.
 - **Freeze polygon**: approximated urban boundary, versioned ⇒ official أمانة الرياض GIS layer.
-- **AVM**: Layers 1–2 with the PRD's prior factor set (versioned, not hard-coded); Layer 3
-  comparables + MOJ/SREM ingestion arrive in Phase 2.
+- **AVM**: full three-layer pipeline is live; the transaction corpus behind Layer 3 is
+  synthetic (deterministic) until real MOJ/SREM ingestion lands — swap `lib/transactions.ts`.
 - **Photos**: brand-gradient placeholders ⇒ media pipeline with perceptual-hash dedup.
 
 ## Compliance behaviours you can test

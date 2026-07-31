@@ -46,6 +46,7 @@ export async function GET(req: Request) {
       lat: l.lat,
       lng: l.lng,
       rega_ad_license_number: l.adLicense.number,
+      created_at: l.createdAt,
     }));
 
   return ok(results, { page: 1, total: results.length });

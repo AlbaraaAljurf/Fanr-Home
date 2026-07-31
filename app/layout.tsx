@@ -30,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav>
             <Link href="/search">الخريطة والبحث</Link>
             <Link href="/rent-checker">هل إيجاري نظامي؟</Link>
+            <Link href="/saved">المحفوظات</Link>
             <Link href="/owner">أملاكي</Link>
             <Link href="/broker">الوسيط</Link>
             <Link href="/admin">الإدارة</Link>

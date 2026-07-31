@@ -2,6 +2,44 @@ import { getDb, addListing } from "@/lib/store";
 import { verifyAdLicense } from "@/lib/compliance";
 import { ok, fail } from "@/lib/api";
 import { Listing } from "@/lib/types";
+import { estimateRent, estimateSale, legalRentFor } from "@/lib/avm";
+
+/** GET /api/v1/homes/listings?ids=a,b,c — card + estimate data for saved/compare views. */
+export async function GET(req: Request) {
+  const idsParam = new URL(req.url).searchParams.get("ids") ?? "";
+  const ids = idsParam.split(",").filter(Boolean).slice(0, 12);
+  const db = getDb();
+  const data = ids
+    .map((id) => db.listings.find((l) => l.id === id))
+    .filter((l): l is Listing => !!l)
+    .map((l) => {
+      const d = db.districts.find((x) => x.id === l.districtId)!;
+      const est = l.listingType === "rent" ? estimateRent(l, d) : estimateSale(l, d);
+      const lr = l.listingType === "rent" ? legalRentFor(l, d) : null;
+      return {
+        id: l.id,
+        ref: l.ref,
+        title: l.title,
+        status: l.status,
+        listingType: l.listingType,
+        propertyType: l.propertyType,
+        price: l.price,
+        areaM2: l.areaM2,
+        bedrooms: l.bedrooms,
+        ageYears: l.ageYears,
+        finishGrade: l.finishGrade,
+        districtId: d.id,
+        districtNameAr: d.nameAr,
+        photoSeed: l.photoSeed,
+        estimateValue: est.value,
+        estimateConfidence: est.confidence,
+        deltaPct: Math.round(((l.price - est.value) / est.value) * 100),
+        verdict: lr?.verdict ?? null,
+        legalCap: lr?.legalCap ?? null,
+      };
+    });
+  return ok(data, { total: data.length });
+}
 
 /** POST /api/v1/homes/listings — publish gated on the REGA ad licence (R3.1.1). */
 export async function POST(req: Request) {

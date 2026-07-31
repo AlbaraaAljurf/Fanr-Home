@@ -4,6 +4,7 @@ import { getDb, getListing, getDistrict } from "@/lib/store";
 import { estimateRent, estimateSale, legalRentFor } from "@/lib/avm";
 import { sar, TYPE_LABELS, FREEZE_LABELS, CONF_LABELS } from "@/lib/format";
 import LeadPanel from "@/components/LeadPanel";
+import FavButton from "@/components/FavButton";
 
 export const dynamic = "force-dynamic";
 
@@ -56,8 +57,11 @@ export default function ListingPage({ params }: { params: { id: string } }) {
                 {d.nameAr}، الرياض · <span style={{ direction: "ltr" }}>{l.ref}</span> · الموقع {l.locationPrecision === "approximate" ? "تقريبي بطلب المُعلن — الحي دقيق" : "دقيق"}
               </div>
             </div>
-            {deltaPct <= -5 && <span className="badge gold">★ أقل من تقدير فَنر بـ {Math.abs(deltaPct)}٪</span>}
-            {deltaPct >= 8 && <span className="badge warn">أعلى من تقدير فَنر بـ {deltaPct}٪</span>}
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              {deltaPct <= -5 && <span className="badge gold">★ أقل من تقدير فَنر بـ {Math.abs(deltaPct)}٪</span>}
+              {deltaPct >= 8 && <span className="badge warn">أعلى من تقدير فَنر بـ {deltaPct}٪</span>}
+              <FavButton listingId={l.id} />
+            </div>
           </div>
 
           <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
@@ -100,9 +104,14 @@ export default function ListingPage({ params }: { params: { id: string } }) {
                   {lr.capSource} — القاعدة: السقف = قيمة آخر عقد موثّق في «إيجار». لا نخمّن الأرقام؛ تحقق من قيمة عقدك في منصة إيجار.
                 </p>
               )}
-              <Link href="/rent-checker" style={{ display: "inline-block", fontSize: 13, fontWeight: 800, color: "var(--info)", marginTop: 10 }}>
-                ما معنى هذا؟ — تحقق من وضعك مجاناً ‹
-              </Link>
+              <div style={{ display: "flex", gap: 14, marginTop: 10, flexWrap: "wrap" }}>
+                <Link href="/guide/rent-freeze" style={{ fontSize: 13, fontWeight: 800, color: "var(--info)" }}>
+                  ما معنى هذا؟ — دليل التجميد ‹
+                </Link>
+                <Link href="/rent-checker" style={{ fontSize: 13, fontWeight: 800, color: "var(--info)" }}>
+                  تحقق من وضعك مجاناً ‹
+                </Link>
+              </div>
             </div>
           )}
 
@@ -124,6 +133,43 @@ export default function ListingPage({ params }: { params: { id: string } }) {
                 {est.factorsApplied.map((f) => `${f.key} ×${f.factor.toFixed(2)}`).join(" · ")}
               </span>
             </div>
+            {est.compEstimate != null && (
+              <div className="kv">
+                <span className="k">المزج (الطبقة 3)</span>
+                <span className="v" style={{ fontSize: 12 }}>
+                  {Math.round((1 - est.w2) * 100)}٪ نموذج السمات ({sar(est.hedonicEstimate)}) + {Math.round(est.w2 * 100)}٪ الصفقات المشابهة ({sar(est.compEstimate)})
+                </span>
+              </div>
+            )}
+            {est.compsUsed.length > 0 && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ fontSize: 13, fontWeight: 800, color: "var(--primary)", cursor: "pointer" }}>
+                  الصفقات المشابهة المستخدمة ({est.compsUsed.length}) — الشفافية الكاملة
+                </summary>
+                <div className="tbl-wrap" style={{ marginTop: 8 }}>
+                  <table className="tbl">
+                    <thead>
+                      <tr><th>المساحة</th><th>سعر الصفقة</th><th>بعد التسوية</th><th>قبل</th><th>البعد</th></tr>
+                    </thead>
+                    <tbody>
+                      {est.compsUsed.slice(0, 6).map((c) => (
+                        <tr key={c.id}>
+                          <td>{c.areaM2} م²</td>
+                          <td>{sar(c.price)}</td>
+                          <td style={{ fontWeight: 700 }}>{sar(c.adjustedPrice)}</td>
+                          <td>{Math.round(c.daysAgo / 30)} أشهر</td>
+                          <td>{c.distanceKm} كم</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="disc" style={{ marginTop: 6 }}>
+                  كل صفقة مسوّاة إلى خصائص هذا العقار (نسبة العوامل + تعديل زمني) ثم يؤخذ الوسيط
+                  الموزون: حداثة (نصف عمر 6 أشهر) × قرب جغرافي × تشابه سمات
+                </p>
+              </details>
+            )}
             <hr className="hr" />
             <p className="disc">
               تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً — النموذج {est.modelVersion} (الطبقتان 1–2؛
@@ -160,7 +206,9 @@ export default function ListingPage({ params }: { params: { id: string } }) {
         <div style={{ flex: 1, minWidth: 300 }}>
           <LeadPanel listingId={l.id} advertiserName={l.advertiserName} advertiserType={l.advertiserType} />
           <div className="card" style={{ marginTop: 14 }}><div className="cpad">
-            <h3 className="ct">بيانات حي {d.nameAr}</h3>
+            <h3 className="ct">
+              <Link href={`/districts/${d.id}`} style={{ color: "var(--primary)" }}>بيانات حي {d.nameAr} ‹</Link>
+            </h3>
             <div className="kv"><span className="k">إيجار سنوي وسيط</span><span className="v">{d.baseRentM2Annual} ريال/م²</span></div>
             <div className="kv"><span className="k">سعر بيع وسيط</span><span className="v">{d.basePriceM2Sale.toLocaleString("en-US")} ريال/م²</span></div>
             <div className="kv"><span className="k">الاتجاه 12 شهراً</span><span className="v" style={{ color: "var(--ok)" }}>‎+{d.trend12mPct}٪</span></div>

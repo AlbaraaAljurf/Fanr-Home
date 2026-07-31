@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/store";
 import { sweepExpiredLicenses } from "@/lib/compliance";
-import { estimateRent, legalRentFor } from "@/lib/avm";
+import { estimateRent, legalRentFor, yieldGuardrail } from "@/lib/avm";
 import { sar } from "@/lib/format";
 import AdminActions from "@/components/AdminActions";
 
@@ -106,19 +106,30 @@ export default function AdminPage() {
       <h2 className="ct" style={{ fontSize: 17, margin: "24px 0 10px" }}>مراقبة تقدير فَنر — خطوط الأساس (الطبقة 1)</h2>
       <div className="tbl-wrap card">
         <table className="tbl">
-          <thead><tr><th>الحي</th><th>بيع ريال/م²</th><th>إيجار ريال/م²</th><th>صفقات 12 شهراً</th><th>الثقة الممنوحة</th></tr></thead>
+          <thead><tr><th>الحي</th><th>بيع ريال/م²</th><th>إيجار ريال/م²</th><th>صفقات 12 شهراً</th><th>العائد الضمني (حارس 3–10٪)</th><th>الثقة الممنوحة</th></tr></thead>
           <tbody>
-            {db.districts.map((d) => (
-              <tr key={d.id}>
-                <td style={{ fontWeight: 700 }}>{d.nameAr}</td>
-                <td>{d.basePriceM2Sale.toLocaleString("en-US")}</td>
-                <td>{d.baseRentM2Annual}</td>
-                <td>{d.txCount12m}</td>
-                <td>
-                  {d.txCount12m >= 150 ? <span className="badge ok">عالية</span> : d.txCount12m >= 90 ? <span className="badge info">متوسطة</span> : <span className="badge warn">منخفضة — نطاق أوسع</span>}
-                </td>
-              </tr>
-            ))}
+            {db.districts.map((d) => {
+              const yg = yieldGuardrail(
+                { propertyType: "apartment", areaM2: 150, ageYears: 5, finishGrade: "standard", floor: 2, elevator: true, parkingSpaces: 1, streetWidthM: 15, corner: false, orientation: "north" },
+                d
+              );
+              return (
+                <tr key={d.id}>
+                  <td style={{ fontWeight: 700 }}><a href={`/districts/${d.id}`} style={{ color: "var(--primary)" }}>{d.nameAr}</a></td>
+                  <td>{d.basePriceM2Sale.toLocaleString("en-US")}</td>
+                  <td>{d.baseRentM2Annual}</td>
+                  <td>{d.txCount12m}</td>
+                  <td>
+                    {yg ? (
+                      yg.ok ? <span className="badge ok">{yg.yieldPct}٪ ✓</span> : <span className="badge danger">{yg.yieldPct}٪ — خارج النطاق، راجع</span>
+                    ) : "—"}
+                  </td>
+                  <td>
+                    {d.txCount12m >= 150 ? <span className="badge ok">عالية</span> : d.txCount12m >= 90 ? <span className="badge info">متوسطة</span> : <span className="badge warn">منخفضة — نطاق أوسع</span>}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -108,6 +108,17 @@ export default function Home() {
           </div></div>
         </div>
 
+        <h2 className="h1" style={{ fontSize: 20, marginTop: 34 }}>صفحات الأحياء</h2>
+        <p className="sub">بيانات كل حي من ركن الصفقات — الوسيط، الاتجاه، المزيج، والمعروض</p>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {db.districts.map((d) => (
+            <Link key={d.id} href={`/districts/${d.id}`} className="chip">
+              {d.nameAr} · {d.basePriceM2Sale.toLocaleString("en-US")} ريال/م²
+            </Link>
+          ))}
+          <Link href="/guide/rent-freeze" className="chip sel">⚖ دليل تجميد الإيجارات</Link>
+        </div>
+
         <p className="disc" style={{ textAlign: "center", marginTop: 30 }}>
           تقدير فَنر مؤشر سوقي استرشادي وليس تقييماً عقارياً معتمداً · العقود الملزمة تُسجَّل في منصة «إيجار» الرسمية
         </p>
